@@ -1,4 +1,3 @@
-// JavaScript Document
 const bees = [
     { name: "Basic", description: "This is the most basic bee, it's pretty simple but very reliable." },
     { name: "Bomber", description: "This bee loves to drop bombs, causing a lot of damage." },
@@ -23,9 +22,9 @@ const maxAttempts = attempts;
 // Load sound effects
 const correctSound = new Audio('sound/correct.mp3');
 const incorrectSound = new Audio('sound/incorrect.mp3');
-const flipSound = new Audio('sound/flipletter.mp3'); // Sound for letter flip
-const letterCorrectSound = new Audio('sound/correctletter.mp3'); // Sound for correct letters
-const letterPresentSound = new Audio('sound/correctpos.mp3'); // Sound for letters in the word
+const flipSound = new Audio('sound/flip.mp3'); // Sound for letter flip
+const letterCorrectSound = new Audio('sound/letter_correct.mp3'); // Sound for correct letters
+const letterPresentSound = new Audio('sound/letter_present.mp3'); // Sound for letters in the word
 
 document.getElementById('guess-input').addEventListener('input', () => {
     const guess = document.getElementById('guess-input').value.toLowerCase();
@@ -54,42 +53,49 @@ function checkGuess(guess) {
     guessRow.className = 'guess-row';
     const guessArray = guess.split('');
     const answerArray = answer.name.toLowerCase().split('');
+
     guessArray.forEach((letter, index) => {
         const guessBox = document.createElement('div');
         guessBox.className = 'guess-box';
         guessBox.innerText = letter;
-
-        // Play flip sound for each letter
-        flipSound.play();
-
-        if (answerArray[index] === letter) {
-            guessBox.classList.add('correct');
-            letterCorrectSound.play(); // Correct letter sound
-        } else if (answerArray.includes(letter)) {
-            guessBox.classList.add('present');
-            letterPresentSound.play(); // Present letter sound
-        } else {
-            guessBox.classList.add('absent');
-        }
-        
         guessRow.appendChild(guessBox);
+
+        setTimeout(() => {
+            // Play flip sound for each letter
+            flipSound.play();
+
+            if (answerArray[index] === letter) {
+                guessBox.classList.add('correct');
+                letterCorrectSound.play(); // Correct letter sound
+            } else if (answerArray.includes(letter)) {
+                guessBox.classList.add('present');
+                letterPresentSound.play(); // Present letter sound
+            } else {
+                guessBox.classList.add('absent');
+            }
+
+        }, index * 500); // Delay each letter by 500ms
     });
+
     document.getElementById('guess-grid').appendChild(guessRow);
     attempts--;
     document.getElementById('remaining-attempts').innerText = `Attempts left: ${attempts}`;
-    if (guess === answer.name.toLowerCase()) {
-        setTimeout(() => alert('Congratulations! You guessed the bee!'), 100);
-        endGame();
-        showBeeImage();
-        showBeeDescription();
-    } else if (attempts === 0) {
-        setTimeout(() => alert(`Game Over! The bee was ${answer.name}`), 100);
-        endGame();
-        showBeeImage();
-        showBeeDescription();
-    } else if (attempts === Math.floor(maxAttempts / 2)) {
-        document.getElementById('hint').innerText = 'Hint: Think of the most common bees!';
-    }
+
+    setTimeout(() => {
+        if (guess === answer.name.toLowerCase()) {
+            setTimeout(() => alert('Congratulations! You guessed the bee!'), 100);
+            endGame();
+            showBeeImage();
+            showBeeDescription();
+        } else if (attempts === 0) {
+            setTimeout(() => alert(`Game Over! The bee was ${answer.name}`), 100);
+            endGame();
+            showBeeImage();
+            showBeeDescription();
+        } else if (attempts === Math.floor(maxAttempts / 2)) {
+            document.getElementById('hint').innerText = 'Hint: Think of the most common bees!';
+        }
+    }, guessArray.length * 500);
 }
 
 function endGame() {
