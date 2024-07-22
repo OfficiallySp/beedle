@@ -31,7 +31,7 @@ const letterPresentSound = new Audio('sound/letter_present.mp3'); // Sound for l
 document.getElementById('guess-input').addEventListener('input', () => {
     const guess = document.getElementById('guess-input').value.toLowerCase();
     const submitButton = document.getElementById('guess-button');
-    submitButton.disabled = !(guess.length > 0 && bees.map(b => b.toLowerCase()).includes(guess) && !document.getElementById('guess-button').disabled);
+    submitButton.disabled = !(guess.length > 0 && bees.map(b => b.toLowerCase()).includes(guess));
 });
 
 document.getElementById('guess-input').addEventListener('keyup', (event) => {
@@ -41,7 +41,7 @@ document.getElementById('guess-input').addEventListener('keyup', (event) => {
 });
 
 document.getElementById('guess-button').addEventListener('click', submitGuess);
-document.getElementById('restart-button').addEventListener('click', restartGame);
+document.getElementById('reset-button').addEventListener('click', resetData);
 
 function submitGuess() {
     if (attempts <= 0 || document.getElementById('guess-button').disabled) {
@@ -85,7 +85,7 @@ function checkGuess(guess) {
                 guessBox.classList.add('absent');
             }
 
-        }, index * 300); // Reduced delay to 250ms
+        }, index * 350); // Speed of animations
     });
 
     document.getElementById('guess-grid').appendChild(guessRow);
@@ -94,37 +94,28 @@ function checkGuess(guess) {
 
     setTimeout(() => {
         if (guess === answer) {
-            setTimeout(() => alert('Congratulations! You guessed the bee!'), 100);
+            setTimeout(() => {
+                alert('Congratulations! You guessed the bee!');
+                correctSound.play(); // Play correct sound
+            }, 100);
             updateStreak(true);
             endGame();
             showBeeImage();
         } else if (attempts === 0) {
-            setTimeout(() => alert(`Game Over! The bee was ${answer}`), 100);
+            setTimeout(() => {
+                alert(`Game Over! The bee was ${answer}`);
+                incorrectSound.play(); // Play incorrect sound
+            }, 100);
             updateStreak(false);
             endGame();
             showBeeImage();
-        } else if (attempts === Math.floor(maxAttempts / 2)) {
-            document.getElementById('hint').innerText = 'Hint: Think of the most common bees!';
         }
-    }, guessArray.length * 250);
+    }, guessArray.length * 150);
 }
 
 function endGame() {
     document.getElementById('guess-button').disabled = true;
     document.getElementById('guess-input').disabled = true;
-    document.getElementById('restart-button').style.display = 'block';
-}
-
-function restartGame() {
-    answer = getDailyBee();
-    attempts = maxAttempts;
-    document.getElementById('guess-grid').innerHTML = '';
-    document.getElementById('remaining-attempts').innerText = `Attempts left: ${attempts}`;
-    document.getElementById('hint').innerText = '';
-    document.getElementById('guess-button').disabled = false;
-    document.getElementById('guess-input').disabled = false;
-    document.getElementById('restart-button').style.display = 'none';
-    document.getElementById('bee-image').style.display = 'none';
 }
 
 function showBeeImage() {
@@ -184,6 +175,13 @@ function updateLeaderboard(attemptsData) {
         entryDiv.innerText = `${index + 1}. Date: ${entry.date} - Attempts: ${entry.attempts}`;
         leaderboard.appendChild(entryDiv);
     });
+}
+
+function resetData() {
+    localStorage.removeItem('dailyStreak');
+    localStorage.removeItem('attemptsData');
+    document.getElementById('streak').innerText = 'Daily Streak: 0';
+    document.getElementById('leaderboard').innerHTML = '<h4>Leaderboard</h4>';
 }
 
 // Initialize streak and leaderboard

@@ -62,7 +62,7 @@ body {
     text-align: center;
 }
 
-#guess-button, #restart-button {
+#guess-button {
     margin-top: 10px;
     padding: 10px 20px;
     font-size: 18px;
@@ -70,12 +70,6 @@ body {
 
 #remaining-attempts {
     margin-top: 10px;
-}
-
-#hint {
-    margin-top: 10px;
-    font-size: 14px;
-    color: gray;
 }
 
 #countdown {
@@ -109,7 +103,7 @@ body {
         font-size: 14px;
     }
 
-    #guess-button, #restart-button {
+    #guess-button {
         padding: 8px 16px;
         font-size: 14px;
     }
