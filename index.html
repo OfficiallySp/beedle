@@ -20,6 +20,7 @@
             <input type="text" id="guess-input" aria-label="Enter your guess" placeholder="Enter bee name">
             <button id="guess-button" aria-label="Submit guess">Submit Guess</button>
         </div>
+<<<<<<< HEAD
 
         <div id="remaining-attempts" aria-live="polite">Attempts left: 6</div>
 
@@ -34,6 +35,17 @@
         <div id="leaderboard" aria-live="polite"></div>
 
         <button id="reset-button" aria-label="Reset game data">Reset Data</button>
+=======
+        <img id="bee-image" src="" alt="Bee Image" style="width: 200px; height: 150px; display: none;">
+        <input type="text" id="guess-input" maxlength="20" placeholder="Enter your guess"> Bee
+        <button id="guess-button" disabled>Submit Guess</button>
+        <div id="remaining-attempts">Attempts left: 6</div>
+        <div id="hint"></div>
+        <button id="restart-button" style="display:none;">Restart Game</button>
+        <div id="countdown">Time until next bee: <span id="timer"></span></div>
+        <div id="streak"></div>
+        <div id="leaderboard"></div>
+>>>>>>> parent of 0bacb1b (more fixes)
     </div>
 
     <script type="module" src="script.js"></script>

@@ -34,12 +34,20 @@ function loadGameData() {
     gameState.attemptsData = JSON.parse(localStorage.getItem('attemptsData')) || [];
 }
 
+<<<<<<< HEAD
 // Update UI elements
 function updateUI() {
     document.getElementById('remaining-attempts').innerText = `Attempts left: ${gameState.attempts}`;
     document.getElementById('streak').innerText = `Daily Streak: ${gameState.streak}`;
     updateLeaderboard();
 }
+=======
+document.getElementById('guess-input').addEventListener('input', () => {
+    const guess = document.getElementById('guess-input').value.toLowerCase();
+    const submitButton = document.getElementById('guess-button');
+    submitButton.disabled = !(guess.length > 0 && bees.map(b => b.toLowerCase()).includes(guess) && !document.getElementById('guess-button').disabled);
+});
+>>>>>>> parent of 0bacb1b (more fixes)
 
 // Debounce function
 function debounce(func, wait) {
@@ -58,7 +66,7 @@ function debounce(func, wait) {
 document.getElementById('guess-input').addEventListener('input', debounce(validateInput, 300));
 document.getElementById('guess-input').addEventListener('keyup', handleEnterKey);
 document.getElementById('guess-button').addEventListener('click', submitGuess);
-document.getElementById('reset-button').addEventListener('click', resetData);
+document.getElementById('restart-button').addEventListener('click', restartGame);
 
 // Input validation
 function validateInput() {
@@ -102,6 +110,7 @@ function checkGuess(guess) {
         guessBox.innerText = letter;
         guessRow.appendChild(guessBox);
 
+<<<<<<< HEAD
         requestAnimationFrame(() => {
             setTimeout(() => {
                 sounds.flip.cloneNode(true).play();
@@ -117,6 +126,23 @@ function checkGuess(guess) {
                 updateVisualKeyboard(letter, answerArray[index] === letter, answerArray.includes(letter));
             }, index * 350);
         });
+=======
+        setTimeout(() => {
+            // Play flip sound for each letter
+            flipSound.cloneNode(true).play();
+
+            if (answerArray[index] === letter) {
+                guessBox.classList.add('correct');
+                letterCorrectSound.cloneNode(true).play(); // Correct letter sound
+            } else if (answerArray.includes(letter)) {
+                guessBox.classList.add('present');
+                letterPresentSound.cloneNode(true).play(); // Present letter sound
+            } else {
+                guessBox.classList.add('absent');
+            }
+
+        }, index * 300); // Reduced delay to 250ms
+>>>>>>> parent of 0bacb1b (more fixes)
     });
 
     document.getElementById('guess-grid').appendChild(guessRow);
@@ -124,12 +150,29 @@ function checkGuess(guess) {
     updateUI();
 
     setTimeout(() => {
+<<<<<<< HEAD
         if (guess === gameState.answer) {
             endGame(true);
         } else if (gameState.attempts === 0) {
             endGame(false);
         }
     }, guessArray.length * 350);
+=======
+        if (guess === answer) {
+            setTimeout(() => alert('Congratulations! You guessed the bee!'), 100);
+            updateStreak(true);
+            endGame();
+            showBeeImage();
+        } else if (attempts === 0) {
+            setTimeout(() => alert(`Game Over! The bee was ${answer}`), 100);
+            updateStreak(false);
+            endGame();
+            showBeeImage();
+        } else if (attempts === Math.floor(maxAttempts / 2)) {
+            document.getElementById('hint').innerText = 'Hint: Think of the most common bees!';
+        }
+    }, guessArray.length * 250);
+>>>>>>> parent of 0bacb1b (more fixes)
 }
 
 // End game
@@ -146,7 +189,23 @@ function endGame(isWin) {
     updateStreak(isWin);
     document.getElementById('guess-button').disabled = true;
     document.getElementById('guess-input').disabled = true;
+<<<<<<< HEAD
     showBeeImage();
+=======
+    document.getElementById('restart-button').style.display = 'block';
+}
+
+function restartGame() {
+    answer = getDailyBee();
+    attempts = maxAttempts;
+    document.getElementById('guess-grid').innerHTML = '';
+    document.getElementById('remaining-attempts').innerText = `Attempts left: ${attempts}`;
+    document.getElementById('hint').innerText = '';
+    document.getElementById('guess-button').disabled = false;
+    document.getElementById('guess-input').disabled = false;
+    document.getElementById('restart-button').style.display = 'none';
+    document.getElementById('bee-image').style.display = 'none';
+>>>>>>> parent of 0bacb1b (more fixes)
 }
 
 // Show bee image
@@ -229,6 +288,7 @@ function createVisualKeyboard() {
     });
 }
 
+<<<<<<< HEAD
 // Update visual keyboard
 function updateVisualKeyboard(letter, isCorrect, isPresent) {
     const keys = document.querySelectorAll('.keyboard-key');
@@ -317,3 +377,8 @@ if ('serviceWorker' in navigator) {
 setInterval(updateCountdown, 1000);
 updateCountdown();
 initGame();
+=======
+// Initialize streak and leaderboard
+document.getElementById('streak').innerText = `Daily Streak: ${localStorage.getItem('dailyStreak') || 0}`;
+updateLeaderboard(JSON.parse(localStorage.getItem('attemptsData')) || []);
+>>>>>>> parent of 0bacb1b (more fixes)
