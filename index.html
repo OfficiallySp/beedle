@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beedle - The Bee Swarm Simulator Wordle</title>
+    <title>Bee Swarm Simulator Wordle</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -11,43 +11,18 @@
         <h1>Beedle</h1>
         <h5>The Bee Swarm Simulator Wordle</h5>
         <h3>Guess the bee in six attempts or less</h3>
-
-        <div id="guess-grid" class="guess-grid" aria-live="polite"></div>
-
-        <img id="bee-image" alt="Bee Image" style="width: 200px; height: 150px; display: none;">
-
-        <div>
-            <input type="text" id="guess-input" aria-label="Enter your guess" placeholder="Enter bee name">
-            <button id="guess-button" aria-label="Submit guess">Submit Guess</button>
+        <div id="guess-grid" class="guess-grid">
+            <!-- Guess rows will be dynamically generated here -->
         </div>
-<<<<<<< HEAD
-
-        <div id="remaining-attempts" aria-live="polite">Attempts left: 6</div>
-
-        <div id="visual-keyboard" aria-label="Visual keyboard"></div>
-
-        <div id="countdown">
-            Time until next bee: <span id="timer" aria-live="polite"></span>
-        </div>
-
-        <div id="streak" aria-live="polite">Daily Streak: 0</div>
-
-        <div id="leaderboard" aria-live="polite"></div>
-
-        <button id="reset-button" aria-label="Reset game data">Reset Data</button>
-=======
         <img id="bee-image" src="" alt="Bee Image" style="width: 200px; height: 150px; display: none;">
         <input type="text" id="guess-input" maxlength="20" placeholder="Enter your guess"> Bee
         <button id="guess-button" disabled>Submit Guess</button>
         <div id="remaining-attempts">Attempts left: 6</div>
-        <div id="hint"></div>
-        <button id="restart-button" style="display:none;">Restart Game</button>
         <div id="countdown">Time until next bee: <span id="timer"></span></div>
-        <div id="streak"></div>
+        <div id="streak">Daily Streak: 0</div>
         <div id="leaderboard"></div>
->>>>>>> parent of 0bacb1b (more fixes)
+        <button id="reset-button">Reset Data</button>
     </div>
-
-    <script type="module" src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
