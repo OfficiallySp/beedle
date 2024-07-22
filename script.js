@@ -1,10 +1,12 @@
 const bees = [
-    { name: "Basic", description: "This is the most basic bee, it's pretty simple but very reliable." },
-    { name: "Bomber", description: "This bee loves to drop bombs, causing a lot of damage." },
-    { name: "Brave", description: "A very brave bee, never afraid to take on any challenge." },
-    { name: "Bumble", description: "A cute and fuzzy bee, always bumbling around." },
-    { name: "Cool", description: "This bee is just too cool for school." },
-    // Add all the bee names and descriptions here
+    "Basic", "Bomber", "Brave", "Bumble", "Cool",
+    "Hasty", "Looker", "Rad", "Rascal", "Stubborn",
+    "Bubble", "Bucko", "Commander", "Demo", "Exhausted",
+    "Fire", "Frosty", "Honey", "Rage", "Riley", "Shocked",
+    "Baby", "Carpenter", "Demon", "Diamond", "Lion", "Music",
+    "Ninja", "Shy", "Buoyant", "Fuzzy", "Precise", "Spicy",
+    "Tadpole", "Vector", "Bear", "Cobalt", "Crimson", "Digital",
+    "Festive", "Gummy", "Photon", "Puppy", "Tabby", "Vicious", "Windy"
 ];
 
 // Function to get the daily bee
@@ -12,7 +14,7 @@ function getDailyBee() {
     const start = new Date(2024, 0, 1); // Start date (e.g., January 1, 2024)
     const now = new Date();
     const diff = Math.floor((now - start) / (1000 * 60 * 60 * 24));
-    return bees[diff % bees.length];
+    return bees[diff % bees.length].toLowerCase();
 }
 
 let answer = getDailyBee();
@@ -29,7 +31,7 @@ const letterPresentSound = new Audio('sound/letter_present.mp3'); // Sound for l
 document.getElementById('guess-input').addEventListener('input', () => {
     const guess = document.getElementById('guess-input').value.toLowerCase();
     const submitButton = document.getElementById('guess-button');
-    submitButton.disabled = !(guess.length > 0 && bees.map(b => b.name.toLowerCase()).includes(guess));
+    submitButton.disabled = !(guess.length > 0 && bees.map(b => b.toLowerCase()).includes(guess));
 });
 
 document.getElementById('guess-input').addEventListener('keyup', (event) => {
@@ -52,7 +54,7 @@ function checkGuess(guess) {
     const guessRow = document.createElement('div');
     guessRow.className = 'guess-row';
     const guessArray = guess.split('');
-    const answerArray = answer.name.toLowerCase().split('');
+    const answerArray = answer.split('');
 
     guessArray.forEach((letter, index) => {
         const guessBox = document.createElement('div');
@@ -82,16 +84,14 @@ function checkGuess(guess) {
     document.getElementById('remaining-attempts').innerText = `Attempts left: ${attempts}`;
 
     setTimeout(() => {
-        if (guess === answer.name.toLowerCase()) {
+        if (guess === answer) {
             setTimeout(() => alert('Congratulations! You guessed the bee!'), 100);
             endGame();
             showBeeImage();
-            showBeeDescription();
         } else if (attempts === 0) {
-            setTimeout(() => alert(`Game Over! The bee was ${answer.name}`), 100);
+            setTimeout(() => alert(`Game Over! The bee was ${answer}`), 100);
             endGame();
             showBeeImage();
-            showBeeDescription();
         } else if (attempts === Math.floor(maxAttempts / 2)) {
             document.getElementById('hint').innerText = 'Hint: Think of the most common bees!';
         }
@@ -112,20 +112,13 @@ function restartGame() {
     document.getElementById('guess-button').disabled = true;
     document.getElementById('restart-button').style.display = 'none';
     document.getElementById('bee-image').style.display = 'none';
-    document.getElementById('bee-description').style.display = 'none';
 }
 
 function showBeeImage() {
     const beeImage = document.getElementById('bee-image');
     beeImage.style.display = 'block';
     // Change the image source based on the answer
-    beeImage.src = `bee/${answer.name.replace(/ /g, '_')}.png`;
-}
-
-function showBeeDescription() {
-    const beeDescription = document.getElementById('bee-description');
-    beeDescription.style.display = 'block';
-    beeDescription.innerText = answer.description;
+    beeImage.src = `bee/${answer.replace(/ /g, '_')}.png`;
 }
 
 // Countdown Timer

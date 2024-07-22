@@ -43,28 +43,16 @@ body {
 .correct {
     background-color: green;
     color: white;
-    animation: flip 0.5s;
 }
 
 .present {
     background-color: yellow;
     color: black;
-    animation: flip 0.5s;
 }
 
 .absent {
     background-color: lightgray;
     color: black;
-    animation: flip 0.5s;
-}
-
-@keyframes flip {
-    from {
-        transform: rotateX(0deg);
-    }
-    to {
-        transform: rotateX(360deg);
-    }
 }
 
 #guess-input {
