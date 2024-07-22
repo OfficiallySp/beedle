@@ -31,7 +31,7 @@ const letterPresentSound = new Audio('sound/letter_present.mp3'); // Sound for l
 document.getElementById('guess-input').addEventListener('input', () => {
     const guess = document.getElementById('guess-input').value.toLowerCase();
     const submitButton = document.getElementById('guess-button');
-    submitButton.disabled = !(guess.length > 0 && bees.map(b => b.toLowerCase()).includes(guess));
+    submitButton.disabled = !(guess.length > 0 && bees.map(b => b.toLowerCase()).includes(guess) && !document.getElementById('guess-button').disabled);
 });
 
 document.getElementById('guess-input').addEventListener('keyup', (event) => {
@@ -44,7 +44,16 @@ document.getElementById('guess-button').addEventListener('click', submitGuess);
 document.getElementById('restart-button').addEventListener('click', restartGame);
 
 function submitGuess() {
+    if (attempts <= 0 || document.getElementById('guess-button').disabled) {
+        return; // Ignore input if the game is over or the button is disabled
+    }
+
     const guess = document.getElementById('guess-input').value.toLowerCase();
+    if (!bees.map(b => b.toLowerCase()).includes(guess)) {
+        alert("Invalid bee name. Please enter a valid bee.");
+        return;
+    }
+
     checkGuess(guess);
     document.getElementById('guess-input').value = '';
     document.getElementById('guess-input').focus();
@@ -76,7 +85,7 @@ function checkGuess(guess) {
                 guessBox.classList.add('absent');
             }
 
-        }, index * 250); // Reduced delay to 250ms
+        }, index * 300); // Reduced delay to 250ms
     });
 
     document.getElementById('guess-grid').appendChild(guessRow);
@@ -102,6 +111,7 @@ function checkGuess(guess) {
 
 function endGame() {
     document.getElementById('guess-button').disabled = true;
+    document.getElementById('guess-input').disabled = true;
     document.getElementById('restart-button').style.display = 'block';
 }
 
@@ -111,7 +121,8 @@ function restartGame() {
     document.getElementById('guess-grid').innerHTML = '';
     document.getElementById('remaining-attempts').innerText = `Attempts left: ${attempts}`;
     document.getElementById('hint').innerText = '';
-    document.getElementById('guess-button').disabled = true;
+    document.getElementById('guess-button').disabled = false;
+    document.getElementById('guess-input').disabled = false;
     document.getElementById('restart-button').style.display = 'none';
     document.getElementById('bee-image').style.display = 'none';
 }
@@ -164,8 +175,9 @@ function updateStreak(isWin) {
 function updateLeaderboard(attemptsData) {
     const leaderboard = document.getElementById('leaderboard');
     leaderboard.innerHTML = '<h4>Leaderboard</h4>';
-    
-    attemptsData.sort((a, b) => a.attempts - b.attempts);
+
+    // Sort by attempts and then by date
+    attemptsData.sort((a, b) => a.attempts - b.attempts || new Date(a.date) - new Date(b.date));
 
     attemptsData.forEach((entry, index) => {
         const entryDiv = document.createElement('div');
