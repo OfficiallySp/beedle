@@ -1,52 +1,82 @@
-const bees = [
-    "Basic", "Bomber", "Brave", "Bumble", "Cool",
-    "Hasty", "Looker", "Rad", "Rascal", "Stubborn",
-    "Bubble", "Bucko", "Commander", "Demo", "Exhausted",
-    "Fire", "Frosty", "Honey", "Rage", "Riley", "Shocked",
-    "Baby", "Carpenter", "Demon", "Diamond", "Lion", "Music",
-    "Ninja", "Shy", "Buoyant", "Fuzzy", "Precise", "Spicy",
-    "Tadpole", "Vector", "Bear", "Cobalt", "Crimson", "Digital",
-    "Festive", "Gummy", "Photon", "Puppy", "Tabby", "Vicious", "Windy"
-];
+// ES6 module syntax
+import { bees, sounds } from './gameData.js';
+
+// State management
+const gameState = {
+    answer: '',
+    attempts: 6,
+    maxAttempts: 6,
+    streak: 0,
+    attemptsData: [],
+	hintUsed: false,
+};
 
 // Function to get the daily bee
 function getDailyBee() {
-    const start = new Date(2024, 0, 1); // Start date (e.g., January 1, 2024)
+    const start = new Date(2024, 0, 1);
     const now = new Date();
     const diff = Math.floor((now - start) / (1000 * 60 * 60 * 24));
     return bees[diff % bees.length].toLowerCase();
 }
 
-let answer = getDailyBee();
-let attempts = 6;
-const maxAttempts = attempts;
+// Initialize game
+function initGame() {
+    gameState.answer = getDailyBee();
+    gameState.attempts = gameState.maxAttempts;
+    loadGameData();
+    updateUI();
+    createVisualKeyboard();
+}
 
-// Load sound effects
-const correctSound = new Audio('sound/correct.mp3');
-const incorrectSound = new Audio('sound/incorrect.mp3');
-const flipSound = new Audio('sound/flip.mp3'); // Sound for letter flip
-const letterCorrectSound = new Audio('sound/letter_correct.mp3'); // Sound for correct letters
-const letterPresentSound = new Audio('sound/letter_present.mp3'); // Sound for letters in the word
+// Load game data from local storage
+function loadGameData() {
+    gameState.streak = parseInt(localStorage.getItem('dailyStreak')) || 0;
+    gameState.attemptsData = JSON.parse(localStorage.getItem('attemptsData')) || [];
+}
 
-document.getElementById('guess-input').addEventListener('input', () => {
-    const guess = document.getElementById('guess-input').value.toLowerCase();
-    const submitButton = document.getElementById('guess-button');
-    submitButton.disabled = !(guess.length > 0 && bees.map(b => b.toLowerCase()).includes(guess));
-});
+// Update UI elements
+function updateUI() {
+    document.getElementById('remaining-attempts').innerText = `Attempts left: ${gameState.attempts}`;
+    document.getElementById('streak').innerText = `Daily Streak: ${gameState.streak}`;
+    updateLeaderboard();
+}
 
-document.getElementById('guess-input').addEventListener('keyup', (event) => {
-    if (event.key === 'Enter' && !document.getElementById('guess-button').disabled) {
-        submitGuess();
-    }
-});
+// Debounce function
+function debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+        const later = () => {
+            clearTimeout(timeout);
+            func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+    };
+}
 
+// Event listeners
+document.getElementById('guess-input').addEventListener('input', debounce(validateInput, 300));
+document.getElementById('guess-input').addEventListener('keyup', handleEnterKey);
 document.getElementById('guess-button').addEventListener('click', submitGuess);
 document.getElementById('reset-button').addEventListener('click', resetData);
 
-function submitGuess() {
-    if (attempts <= 0 || document.getElementById('guess-button').disabled) {
-        return; // Ignore input if the game is over or the button is disabled
+// Input validation
+function validateInput() {
+    const guess = document.getElementById('guess-input').value.toLowerCase();
+    const submitButton = document.getElementById('guess-button');
+    submitButton.disabled = !(guess.length > 0 && bees.map(b => b.toLowerCase()).includes(guess));
+}
+
+// Handle Enter key press
+function handleEnterKey(event) {
+    if (event.key === 'Enter' && !document.getElementById('guess-button').disabled) {
+        submitGuess();
     }
+}
+
+// Submit guess
+function submitGuess() {
+    if (gameState.attempts <= 0 || document.getElementById('guess-button').disabled) return;
 
     const guess = document.getElementById('guess-input').value.toLowerCase();
     if (!bees.map(b => b.toLowerCase()).includes(guess)) {
@@ -59,11 +89,12 @@ function submitGuess() {
     document.getElementById('guess-input').focus();
 }
 
+// Check guess
 function checkGuess(guess) {
     const guessRow = document.createElement('div');
     guessRow.className = 'guess-row';
     const guessArray = guess.split('');
-    const answerArray = answer.split('');
+    const answerArray = gameState.answer.split('');
 
     guessArray.forEach((letter, index) => {
         const guessBox = document.createElement('div');
@@ -71,57 +102,91 @@ function checkGuess(guess) {
         guessBox.innerText = letter;
         guessRow.appendChild(guessBox);
 
-        setTimeout(() => {
-            // Play flip sound for each letter
-            flipSound.cloneNode(true).play();
-
-            if (answerArray[index] === letter) {
-                guessBox.classList.add('correct');
-                letterCorrectSound.cloneNode(true).play(); // Correct letter sound
-            } else if (answerArray.includes(letter)) {
-                guessBox.classList.add('present');
-                letterPresentSound.cloneNode(true).play(); // Present letter sound
-            } else {
-                guessBox.classList.add('absent');
-            }
-
-        }, index * 350); // Speed of animations
+        requestAnimationFrame(() => {
+            setTimeout(() => {
+                sounds.flip.cloneNode(true).play();
+                if (answerArray[index] === letter) {
+                    guessBox.classList.add('correct');
+                    sounds.letterCorrect.cloneNode(true).play();
+                } else if (answerArray.includes(letter)) {
+                    guessBox.classList.add('present');
+                    sounds.letterPresent.cloneNode(true).play();
+                } else {
+                    guessBox.classList.add('absent');
+                }
+                updateVisualKeyboard(letter, answerArray[index] === letter, answerArray.includes(letter));
+            }, index * 350);
+        });
     });
 
     document.getElementById('guess-grid').appendChild(guessRow);
-    attempts--;
-    document.getElementById('remaining-attempts').innerText = `Attempts left: ${attempts}`;
+    gameState.attempts--;
+    updateUI();
 
     setTimeout(() => {
-        if (guess === answer) {
-            setTimeout(() => {
-                alert('Congratulations! You guessed the bee!');
-                correctSound.play(); // Play correct sound
-            }, 100);
-            updateStreak(true);
-            endGame();
-            showBeeImage();
-        } else if (attempts === 0) {
-            setTimeout(() => {
-                alert(`Game Over! The bee was ${answer}`);
-                incorrectSound.play(); // Play incorrect sound
-            }, 100);
-            updateStreak(false);
-            endGame();
-            showBeeImage();
+        if (guess === gameState.answer) {
+            endGame(true);
+        } else if (gameState.attempts === 0) {
+            endGame(false);
         }
-    }, guessArray.length * 150);
+    }, guessArray.length * 350);
 }
 
-function endGame() {
+// End game
+function endGame(isWin) {
+    setTimeout(() => {
+        if (isWin) {
+            alert('Congratulations! You guessed the bee!');
+            sounds.correct.play();
+        } else {
+            alert(`Game Over! The bee was ${gameState.answer}`);
+            sounds.incorrect.play();
+        }
+    }, 100);
+    updateStreak(isWin);
     document.getElementById('guess-button').disabled = true;
     document.getElementById('guess-input').disabled = true;
+    showBeeImage();
 }
 
+// Show bee image
 function showBeeImage() {
     const beeImage = document.getElementById('bee-image');
     beeImage.style.display = 'block';
-    beeImage.src = `bee/${answer.replace(/ /g, '_')}.png`;
+    beeImage.src = `bee/${gameState.answer.replace(/ /g, '_')}.png`;
+    beeImage.alt = `Image of ${gameState.answer} bee`;
+}
+
+// Update streak
+function updateStreak(isWin) {
+    gameState.streak = isWin ? gameState.streak + 1 : 0;
+    gameState.attemptsData.push({ date: new Date().toDateString(), attempts: gameState.maxAttempts - gameState.attempts });
+    localStorage.setItem('dailyStreak', gameState.streak);
+    localStorage.setItem('attemptsData', JSON.stringify(gameState.attemptsData));
+    updateUI();
+}
+
+// Update leaderboard
+function updateLeaderboard() {
+    const leaderboard = document.getElementById('leaderboard');
+    leaderboard.innerHTML = '<h4>Leaderboard</h4>';
+    gameState.attemptsData
+        .sort((a, b) => a.attempts - b.attempts || new Date(a.date) - new Date(b.date))
+        .slice(0, 5)
+        .forEach((entry, index) => {
+            const entryDiv = document.createElement('div');
+            entryDiv.innerText = `${index + 1}. Date: ${entry.date} - Attempts: ${entry.attempts}`;
+            leaderboard.appendChild(entryDiv);
+        });
+}
+
+// Reset data
+function resetData() {
+    localStorage.removeItem('dailyStreak');
+    localStorage.removeItem('attemptsData');
+    gameState.streak = 0;
+    gameState.attemptsData = [];
+    updateUI();
 }
 
 // Countdown Timer
@@ -137,53 +202,118 @@ function updateCountdown() {
     document.getElementById('timer').innerText = `${hours}h ${minutes}m ${seconds}s`;
 }
 
-// Update countdown every second
-setInterval(updateCountdown, 1000);
+// Create visual keyboard
+function createVisualKeyboard() {
+    const keyboard = document.getElementById('visual-keyboard');
+    const rows = [
+        ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
+        ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
+        ['z', 'x', 'c', 'v', 'b', 'n', 'm']
+    ];
 
-// Initialize countdown
-updateCountdown();
-
-// Daily streak and leaderboard
-function updateStreak(isWin) {
-    let streak = parseInt(localStorage.getItem('dailyStreak')) || 0;
-    let attemptsData = JSON.parse(localStorage.getItem('attemptsData')) || [];
-
-    if (isWin) {
-        streak++;
-    } else {
-        streak = 0;
-    }
-
-    attemptsData.push({ date: new Date().toDateString(), attempts: maxAttempts - attempts });
-    localStorage.setItem('dailyStreak', streak);
-    localStorage.setItem('attemptsData', JSON.stringify(attemptsData));
-
-    document.getElementById('streak').innerText = `Daily Streak: ${streak}`;
-
-    updateLeaderboard(attemptsData);
-}
-
-function updateLeaderboard(attemptsData) {
-    const leaderboard = document.getElementById('leaderboard');
-    leaderboard.innerHTML = '<h4>Leaderboard</h4>';
-
-    // Sort by attempts and then by date
-    attemptsData.sort((a, b) => a.attempts - b.attempts || new Date(a.date) - new Date(b.date));
-
-    attemptsData.forEach((entry, index) => {
-        const entryDiv = document.createElement('div');
-        entryDiv.innerText = `${index + 1}. Date: ${entry.date} - Attempts: ${entry.attempts}`;
-        leaderboard.appendChild(entryDiv);
+    rows.forEach(row => {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'keyboard-row';
+        row.forEach(letter => {
+            const key = document.createElement('button');
+            key.className = 'keyboard-key';
+            key.innerText = letter;
+            key.addEventListener('click', () => {
+                const input = document.getElementById('guess-input');
+                input.value += letter;
+                validateInput();
+            });
+            rowDiv.appendChild(key);
+        });
+        keyboard.appendChild(rowDiv);
     });
 }
 
-function resetData() {
-    localStorage.removeItem('dailyStreak');
-    localStorage.removeItem('attemptsData');
-    document.getElementById('streak').innerText = 'Daily Streak: 0';
-    document.getElementById('leaderboard').innerHTML = '<h4>Leaderboard</h4>';
+// Update visual keyboard
+function updateVisualKeyboard(letter, isCorrect, isPresent) {
+    const keys = document.querySelectorAll('.keyboard-key');
+    keys.forEach(key => {
+        if (key.innerText === letter) {
+            if (isCorrect) {
+                key.classList.add('correct');
+            } else if (isPresent) {
+                key.classList.add('present');
+            } else {
+                key.classList.add('absent');
+            }
+        }
+    });
 }
 
-// Initialize streak and leaderboard
-document.getElementById('streak').innerText = `Daily Streak: ${localStorage.getItem('dailyStreak') || 0}`;
-updateLeaderboard(JSON.parse(localStorage.getItem('attemptsData')) || []);
+// Add this to the gameState object
+hintUsed: false,
+
+// Add this function
+function getHint() {
+    if (!gameState.hintUsed) {
+        const hintIndex = Math.floor(Math.random() * gameState.answer.length);
+        alert(`Hint: The ${ordinal(hintIndex + 1)} letter is "${gameState.answer[hintIndex]}"`);
+        gameState.hintUsed = true;
+        gameState.attempts--;
+        updateUI();
+    } else {
+        alert("You've already used your hint for this game!");
+    }
+}
+
+// Helper function for ordinal numbers
+function ordinal(n) {
+    const s = ["th", "st", "nd", "rd"];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+// Add a hint button in the HTML
+// <button id="hint-button" aria-label="Get a hint">Hint</button>
+
+// Add this to your event listeners
+document.getElementById('hint-button').addEventListener('click', getHint);
+
+function shareResult() {
+    const guessCount = gameState.maxAttempts - gameState.attempts;
+    const emoji = guessCount <= gameState.maxAttempts ? '🐝' : '😢';
+    const shareText = `Beedle ${emoji} ${guessCount}/${gameState.maxAttempts}\n\nCan you guess the bee? Play at [your-game-url]`;
+    
+    if (navigator.share) {
+        navigator.share({
+            title: 'Beedle Result',
+            text: shareText
+        }).catch(console.error);
+    } else {
+        // Fallback for browsers that don't support Web Share API
+        const textarea = document.createElement('textarea');
+        textarea.value = shareText;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        alert('Result copied to clipboard!');
+    }
+}
+
+// Add a share button in the HTML
+// <button id="share-button" aria-label="Share your result">Share</button>
+
+// Add this to your event listeners
+document.getElementById('share-button').addEventListener('click', shareResult);
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(registration => {
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      }, err => {
+        console.log('ServiceWorker registration failed: ', err);
+      });
+  });
+}
+
+// Initialize countdown and game
+setInterval(updateCountdown, 1000);
+updateCountdown();
+initGame();
