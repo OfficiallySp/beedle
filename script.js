@@ -64,19 +64,19 @@ function checkGuess(guess) {
 
         setTimeout(() => {
             // Play flip sound for each letter
-            flipSound.play();
+            flipSound.cloneNode(true).play();
 
             if (answerArray[index] === letter) {
                 guessBox.classList.add('correct');
-                letterCorrectSound.play(); // Correct letter sound
+                letterCorrectSound.cloneNode(true).play(); // Correct letter sound
             } else if (answerArray.includes(letter)) {
                 guessBox.classList.add('present');
-                letterPresentSound.play(); // Present letter sound
+                letterPresentSound.cloneNode(true).play(); // Present letter sound
             } else {
                 guessBox.classList.add('absent');
             }
 
-        }, index * 500); // Delay each letter by 500ms
+        }, index * 250); // Reduced delay to 250ms
     });
 
     document.getElementById('guess-grid').appendChild(guessRow);
@@ -86,16 +86,18 @@ function checkGuess(guess) {
     setTimeout(() => {
         if (guess === answer) {
             setTimeout(() => alert('Congratulations! You guessed the bee!'), 100);
+            updateStreak(true);
             endGame();
             showBeeImage();
         } else if (attempts === 0) {
             setTimeout(() => alert(`Game Over! The bee was ${answer}`), 100);
+            updateStreak(false);
             endGame();
             showBeeImage();
         } else if (attempts === Math.floor(maxAttempts / 2)) {
             document.getElementById('hint').innerText = 'Hint: Think of the most common bees!';
         }
-    }, guessArray.length * 500);
+    }, guessArray.length * 250);
 }
 
 function endGame() {
@@ -117,7 +119,6 @@ function restartGame() {
 function showBeeImage() {
     const beeImage = document.getElementById('bee-image');
     beeImage.style.display = 'block';
-    // Change the image source based on the answer
     beeImage.src = `bee/${answer.replace(/ /g, '_')}.png`;
 }
 
@@ -139,3 +140,40 @@ setInterval(updateCountdown, 1000);
 
 // Initialize countdown
 updateCountdown();
+
+// Daily streak and leaderboard
+function updateStreak(isWin) {
+    let streak = parseInt(localStorage.getItem('dailyStreak')) || 0;
+    let attemptsData = JSON.parse(localStorage.getItem('attemptsData')) || [];
+
+    if (isWin) {
+        streak++;
+    } else {
+        streak = 0;
+    }
+
+    attemptsData.push({ date: new Date().toDateString(), attempts: maxAttempts - attempts });
+    localStorage.setItem('dailyStreak', streak);
+    localStorage.setItem('attemptsData', JSON.stringify(attemptsData));
+
+    document.getElementById('streak').innerText = `Daily Streak: ${streak}`;
+
+    updateLeaderboard(attemptsData);
+}
+
+function updateLeaderboard(attemptsData) {
+    const leaderboard = document.getElementById('leaderboard');
+    leaderboard.innerHTML = '<h4>Leaderboard</h4>';
+    
+    attemptsData.sort((a, b) => a.attempts - b.attempts);
+
+    attemptsData.forEach((entry, index) => {
+        const entryDiv = document.createElement('div');
+        entryDiv.innerText = `${index + 1}. Date: ${entry.date} - Attempts: ${entry.attempts}`;
+        leaderboard.appendChild(entryDiv);
+    });
+}
+
+// Initialize streak and leaderboard
+document.getElementById('streak').innerText = `Daily Streak: ${localStorage.getItem('dailyStreak') || 0}`;
+updateLeaderboard(JSON.parse(localStorage.getItem('attemptsData')) || []);

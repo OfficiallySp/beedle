@@ -37,7 +37,7 @@ body {
     align-items: center;
     font-size: 18px;
     text-transform: capitalize;
-    transition: background-color 0.5s, color 0.5s;
+    transition: background-color 0.25s, color 0.25s; /* Reduced transition duration */
 }
 
 .correct {
@@ -79,6 +79,18 @@ body {
 }
 
 #countdown {
+    margin-top: 10px;
+    font-size: 14px;
+    color: gray;
+}
+
+#streak {
+    margin-top: 10px;
+    font-size: 14px;
+    color: gray;
+}
+
+#leaderboard {
     margin-top: 10px;
     font-size: 14px;
     color: gray;
