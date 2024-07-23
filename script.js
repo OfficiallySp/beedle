@@ -84,8 +84,7 @@ function checkGuess(guess) {
             } else {
                 guessBox.classList.add('absent');
             }
-
-        }, index * 350); // Speed of animations
+        }, index * 300); // Speed of animations
     });
 
     document.getElementById('guess-grid').appendChild(guessRow);
@@ -95,22 +94,22 @@ function checkGuess(guess) {
     setTimeout(() => {
         if (guess === answer) {
             setTimeout(() => {
-                alert('Congratulations! You guessed the bee!');
                 correctSound.play(); // Play correct sound
+                alert('Congratulations! You guessed the bee!');
             }, 100);
             updateStreak(true);
             endGame();
             showBeeImage();
         } else if (attempts === 0) {
             setTimeout(() => {
-                alert(`Game Over! The bee was ${answer}`);
                 incorrectSound.play(); // Play incorrect sound
+                alert(`Game Over! The bee was ${answer}`);
             }, 100);
             updateStreak(false);
             endGame();
             showBeeImage();
         }
-    }, guessArray.length * 150);
+    }, guessArray.length * 500 + 150); // Wait for the last animation + a little buffer
 }
 
 function endGame() {
