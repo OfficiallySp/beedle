@@ -254,3 +254,117 @@ function resetData() {
 // Initialize streak and leaderboard
 document.getElementById('streak').innerText = `Daily Streak: ${localStorage.getItem('dailyStreak') || 0}`;
 updateLeaderboard(JSON.parse(localStorage.getItem('attemptsData')) || []);
+
+// Achievements
+const achievements = {
+    firstWin: { name: "First Win", description: "Win your first game", unlocked: false },
+    threeInARow: { name: "Hat Trick", description: "Win three games in a row", unlocked: false },
+    perfectGame: { name: "Perfect Game", description: "Win in just one attempt", unlocked: false }
+};
+
+// Tutorial content
+const tutorialContent = `
+    <h2>How to Play Beedle</h2>
+    <ol>
+        <li>You have 6 attempts to guess the correct bee from Bee Swarm Simulator.</li>
+        <li>After each guess, the color of the tiles will change to show how close your guess was:</li>
+        <ul>
+            <li>Green: Correct letter in the correct position</li>
+            <li>Yellow: Correct letter but in the wrong position</li>
+            <li>Gray: Letter is not in the word</li>
+        </ul>
+        <li>Keep guessing until you find the correct bee or run out of attempts!</li>
+    </ol>
+`;
+
+// Modal functionality
+const modal = document.getElementById("modal");
+const modalText = document.getElementById("modal-text");
+const closeBtn = document.getElementsByClassName("close")[0];
+
+function showModal(content) {
+    modalText.innerHTML = content;
+    modal.style.display = "block";
+}
+
+closeBtn.onclick = function() {
+    modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+
+// Tutorial button
+document.getElementById("tutorial-button").addEventListener("click", () => {
+    showModal(tutorialContent);
+});
+
+// Achievements button
+document.getElementById("achievements-button").addEventListener("click", () => {
+    let achievementsContent = "<h2>Achievements</h2><ul>";
+    for (let key in achievements) {
+        achievementsContent += `<li>${achievements[key].name}: ${achievements[key].description} - ${achievements[key].unlocked ? "Unlocked" : "Locked"}</li>`;
+    }
+    achievementsContent += "</ul>";
+    showModal(achievementsContent);
+});
+
+// Theme toggle
+const themeToggle = document.getElementById("theme-toggle");
+themeToggle.addEventListener("change", () => {
+    document.body.classList.toggle("dark-mode");
+    localStorage.setItem("darkMode", themeToggle.checked);
+});
+
+// Sound toggle
+const soundToggle = document.getElementById("sound-toggle");
+let soundEnabled = true;
+soundToggle.addEventListener("change", () => {
+    soundEnabled = soundToggle.checked;
+    localStorage.setItem("soundEnabled", soundEnabled);
+});
+
+// Load user preferences
+if (localStorage.getItem("darkMode") === "true") {
+    themeToggle.checked = true;
+    document.body.classList.add("dark-mode");
+}
+if (localStorage.getItem("soundEnabled") === "false") {
+    soundToggle.checked = false;
+    soundEnabled = false;
+}
+
+// Function to play sound
+function playSound(soundName) {
+    if (soundEnabled) {
+        // Implement sound playing logic here
+        console.log(`Playing sound: ${soundName}`);
+    }
+}
+
+// Update checkAchievements function
+function checkAchievements(isWin) {
+    if (!achievements.firstWin.unlocked && isWin) {
+        achievements.firstWin.unlocked = true;
+        showModal("Achievement Unlocked: First Win!");
+    }
+    // Add more achievement checks here
+    if (!achievements.tenGames.unlocked && gamesPlayed >= 10) {
+        achievements.tenGames.unlocked = true;
+        showModal("Achievement Unlocked: Dedicated Player!");
+    }
+    if (!achievements.perfectGame.unlocked && isWin && currentScore === maxScore) {
+        achievements.perfectGame.unlocked = true;
+        showModal("Achievement Unlocked: Perfect Game!");
+    }
+}
+
+// Call checkAchievements after each game
+// For example, in your existing game logic:
+function endGame(isWin) {
+    // ... existing end game logic ...
+    checkAchievements();
+}
