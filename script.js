@@ -97,7 +97,7 @@ function checkGuess(guess) {
                 correctSound.play();
                 alert('Congratulations! You guessed the bee!');
             }, 100);
-            updateStats(true, maxAttempts - attempts + 1);
+            updateStats(true, maxAttempts - attempts);
             endGame();
             showBeeImage();
         } else if (attempts === 0) {
@@ -209,6 +209,26 @@ statsButton.id = 'show-stats';
 statsButton.textContent = 'Statistics';
 statsButton.addEventListener('click', displayStats);
 document.querySelector('.game-container').appendChild(statsButton);
+
+// Daily streak and leaderboard
+function updateStreak(isWin) {
+    let streak = parseInt(localStorage.getItem('dailyStreak')) || 0;
+    let attemptsData = JSON.parse(localStorage.getItem('attemptsData')) || [];
+
+    if (isWin) {
+        streak++;
+    } else {
+        streak = 0;
+    }
+
+    attemptsData.push({ date: new Date().toDateString(), attempts: maxAttempts - attempts });
+    localStorage.setItem('dailyStreak', streak);
+    localStorage.setItem('attemptsData', JSON.stringify(attemptsData));
+
+    document.getElementById('streak').innerText = `Daily Streak: ${streak}`;
+
+    updateLeaderboard(attemptsData);
+}
 
 function updateLeaderboard(attemptsData) {
     const leaderboard = document.getElementById('leaderboard');
