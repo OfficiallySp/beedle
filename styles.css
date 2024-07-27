@@ -90,6 +90,72 @@ body {
     color: gray;
 }
 
+.stats-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    z-index: 1000;
+    text-align: center;
+}
+
+.stats-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-number {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.guess-distribution {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+}
+
+.guess-bar {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.guess-label {
+    width: 20px;
+    text-align: right;
+    margin-right: 5px;
+}
+
+.guess-count {
+    background-color: #787c7e;
+    color: white;
+    padding: 2px 5px;
+    min-width: 20px;
+    text-align: right;
+}
+
+#show-stats {
+    margin-top: 10px;
+}
+
+#close-stats {
+    margin-top: 20px;
+}
+
 @media (max-width: 600px) {
     .guess-box {
         width: 30px;

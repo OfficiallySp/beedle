@@ -94,22 +94,22 @@ function checkGuess(guess) {
     setTimeout(() => {
         if (guess === answer) {
             setTimeout(() => {
-                correctSound.play(); // Play correct sound
+                correctSound.play();
                 alert('Congratulations! You guessed the bee!');
             }, 100);
-            updateStreak(true);
+            updateStats(true, maxAttempts - attempts + 1);
             endGame();
             showBeeImage();
         } else if (attempts === 0) {
             setTimeout(() => {
-                incorrectSound.play(); // Play incorrect sound
+                incorrectSound.play();
                 alert(`Game Over! The bee was ${answer}`);
             }, 100);
-            updateStreak(false);
+            updateStats(false, maxAttempts);
             endGame();
             showBeeImage();
         }
-    }, guessArray.length * 500 + 150); // Wait for the last animation + a little buffer
+    }, guessArray.length * 500 + 150);
 }
 
 function endGame() {
@@ -142,25 +142,73 @@ setInterval(updateCountdown, 1000);
 // Initialize countdown
 updateCountdown();
 
-// Daily streak and leaderboard
-function updateStreak(isWin) {
-    let streak = parseInt(localStorage.getItem('dailyStreak')) || 0;
-    let attemptsData = JSON.parse(localStorage.getItem('attemptsData')) || [];
+// Stats and streak management
+let stats = JSON.parse(localStorage.getItem('stats')) || {
+    gamesPlayed: 0,
+    gamesWon: 0,
+    currentStreak: 0,
+    maxStreak: 0,
+    guessDistribution: [0, 0, 0, 0, 0, 0]
+};
 
+function updateStats(isWin, attempts) {
+    stats.gamesPlayed++;
     if (isWin) {
-        streak++;
+        stats.gamesWon++;
+        stats.currentStreak++;
+        stats.maxStreak = Math.max(stats.maxStreak, stats.currentStreak);
+        stats.guessDistribution[attempts - 1]++;
     } else {
-        streak = 0;
+        stats.currentStreak = 0;
     }
-
-    attemptsData.push({ date: new Date().toDateString(), attempts: maxAttempts - attempts });
-    localStorage.setItem('dailyStreak', streak);
-    localStorage.setItem('attemptsData', JSON.stringify(attemptsData));
-
-    document.getElementById('streak').innerText = `Daily Streak: ${streak}`;
-
-    updateLeaderboard(attemptsData);
+    localStorage.setItem('stats', JSON.stringify(stats));
+    displayStats();
 }
+
+function displayStats() {
+    const statsModal = document.createElement('div');
+    statsModal.className = 'stats-modal';
+    statsModal.innerHTML = `
+        <h2>STATISTICS</h2>
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">${stats.gamesPlayed}</div>
+                <div class="stat-label">Played</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">${Math.round((stats.gamesWon / stats.gamesPlayed) * 100) || 0}</div>
+                <div class="stat-label">Win %</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">${stats.currentStreak}</div>
+                <div class="stat-label">Current Streak</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">${stats.maxStreak}</div>
+                <div class="stat-label">Max Streak</div>
+            </div>
+        </div>
+        <h3>GUESS DISTRIBUTION</h3>
+        <div class="guess-distribution">
+            ${stats.guessDistribution.map((count, index) => `
+                <div class="guess-bar">
+                    <div class="guess-label">${index + 1}</div>
+                    <div class="guess-count" style="width: ${(count / Math.max(...stats.guessDistribution)) * 100}%">${count}</div>
+                </div>
+            `).join('')}
+        </div>
+        <button id="close-stats">Close</button>
+    `;
+    document.body.appendChild(statsModal);
+    document.getElementById('close-stats').addEventListener('click', () => statsModal.remove());
+}
+
+// Add a button to show stats
+const statsButton = document.createElement('button');
+statsButton.id = 'show-stats';
+statsButton.textContent = 'Statistics';
+statsButton.addEventListener('click', displayStats);
+document.querySelector('.game-container').appendChild(statsButton);
 
 function updateLeaderboard(attemptsData) {
     const leaderboard = document.getElementById('leaderboard');
