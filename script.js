@@ -41,7 +41,15 @@ document.getElementById('guess-input').addEventListener('keyup', (event) => {
 });
 
 document.getElementById('guess-button').addEventListener('click', submitGuess);
-document.getElementById('reset-button').addEventListener('click', resetData);
+document.getElementById('reset-button').addEventListener('click', () => {
+    if (confirm("Are you sure you want to reset all data? This action cannot be undone.")) {
+        localStorage.removeItem("dailyStreak");
+        localStorage.removeItem("attemptsData");
+        localStorage.removeItem("stats");
+        localStorage.removeItem("achievements");
+        location.reload(); // Reload the page to reset the game state
+    }
+});
 
 function submitGuess() {
     if (attempts <= 0 || document.getElementById('guess-button').disabled) {
@@ -73,14 +81,20 @@ function checkGuess(guess) {
 
         setTimeout(() => {
             // Play flip sound for each letter
-            flipSound.cloneNode(true).play();
+            if (soundEnabled) {
+                playSound('flip');
+            }
 
             if (answerArray[index] === letter) {
                 guessBox.classList.add('correct');
-                letterCorrectSound.cloneNode(true).play(); // Correct letter sound
+                if (soundEnabled) {
+                    playSound('letter_correct');
+                }
             } else if (answerArray.includes(letter)) {
                 guessBox.classList.add('present');
-                letterPresentSound.cloneNode(true).play(); // Present letter sound
+                if (soundEnabled) {
+                    playSound('letter_present');
+                }
             } else {
                 guessBox.classList.add('absent');
             }
@@ -94,27 +108,32 @@ function checkGuess(guess) {
     setTimeout(() => {
         if (guess === answer) {
             setTimeout(() => {
-                correctSound.play();
+                if (soundEnabled) {
+                    playSound('correct');
+                }
                 alert('Congratulations! You guessed the bee!');
             }, 100);
             updateStats(true, maxAttempts - attempts);
-            endGame();
+            endGame(true);
             showBeeImage();
         } else if (attempts === 0) {
             setTimeout(() => {
-                incorrectSound.play();
+                if (soundEnabled) {
+                    playSound('incorrect');
+                }
                 alert(`Game Over! The bee was ${answer}`);
             }, 100);
             updateStats(false, maxAttempts);
-            endGame();
+            endGame(false);
             showBeeImage();
         }
     }, guessArray.length * 500 + 150);
 }
 
-function endGame() {
+function endGame(isWin) {
     document.getElementById('guess-button').disabled = true;
     document.getElementById('guess-input').disabled = true;
+    checkAchievements(isWin, maxAttempts - attempts + 1);
 }
 
 function showBeeImage() {
@@ -203,13 +222,6 @@ function displayStats() {
     document.getElementById('close-stats').addEventListener('click', () => statsModal.remove());
 }
 
-// Add a button to show stats
-const statsButton = document.createElement('button');
-statsButton.id = 'show-stats';
-statsButton.textContent = 'Statistics';
-statsButton.addEventListener('click', displayStats);
-document.querySelector('.game-container').appendChild(statsButton);
-
 // Daily streak and leaderboard
 function updateStreak(isWin) {
     let streak = parseInt(localStorage.getItem('dailyStreak')) || 0;
@@ -244,23 +256,99 @@ function updateLeaderboard(attemptsData) {
     });
 }
 
-function resetData() {
-    localStorage.removeItem('dailyStreak');
-    localStorage.removeItem('attemptsData');
-    document.getElementById('streak').innerText = 'Daily Streak: 0';
-    document.getElementById('leaderboard').innerHTML = '<h4>Leaderboard</h4>';
+// Theme toggle
+const themeToggle = document.getElementById("theme-toggle");
+themeToggle.addEventListener("change", () => {
+    document.body.classList.toggle("dark-mode");
+    localStorage.setItem("darkMode", themeToggle.checked);
+});
+
+// Sound toggle
+const soundToggle = document.getElementById("sound-toggle");
+let soundEnabled = localStorage.getItem("soundEnabled") !== "false";
+soundToggle.checked = soundEnabled;
+soundToggle.addEventListener("change", () => {
+    soundEnabled = soundToggle.checked;
+    localStorage.setItem("soundEnabled", soundEnabled);
+});
+
+// Load user preferences
+if (localStorage.getItem("darkMode") === "true") {
+    themeToggle.checked = true;
+    document.body.classList.add("dark-mode");
 }
 
-// Initialize streak and leaderboard
-document.getElementById('streak').innerText = `Daily Streak: ${localStorage.getItem('dailyStreak') || 0}`;
-updateLeaderboard(JSON.parse(localStorage.getItem('attemptsData')) || []);
+// Function to play sound
+function playSound(soundName) {
+    if (soundEnabled) {
+        const sound = new Audio(`sound/${soundName}.mp3`);
+        sound.play().catch(error => console.error('Error playing sound:', error));
+    }
+}
 
 // Achievements
-const achievements = {
+let achievements = JSON.parse(localStorage.getItem('achievements')) || {
     firstWin: { name: "First Win", description: "Win your first game", unlocked: false },
     threeInARow: { name: "Hat Trick", description: "Win three games in a row", unlocked: false },
     perfectGame: { name: "Perfect Game", description: "Win in just one attempt", unlocked: false }
 };
+
+// Achievements button
+document.getElementById("achievements-button").addEventListener("click", () => {
+    let achievementsContent = "<h2>Achievements</h2><ul>";
+    for (let key in achievements) {
+        achievementsContent += `<li>${achievements[key].name}: ${achievements[key].description} - ${achievements[key].unlocked ? "Unlocked" : "Locked"}</li>`;
+    }
+    achievementsContent += "</ul>";
+    showModal(achievementsContent);
+});
+
+// Update checkAchievements function
+function checkAchievements(isWin, attempts) {
+    if (!achievements.firstWin.unlocked && isWin) {
+        achievements.firstWin.unlocked = true;
+        showModal("Achievement Unlocked: First Win!");
+    }
+    if (!achievements.perfectGame.unlocked && isWin && attempts === 1) {
+        achievements.perfectGame.unlocked = true;
+        showModal("Achievement Unlocked: Perfect Game!");
+    }
+    // Add logic for threeInARow achievement here
+    localStorage.setItem('achievements', JSON.stringify(achievements));
+}
+
+// Make sure this function is defined
+function showModal(content) {
+    const modal = document.getElementById("modal");
+    const modalText = document.getElementById("modal-text");
+    modalText.innerHTML = content;
+    modal.style.display = "block";
+
+    // Close button functionality
+    const closeBtn = modal.querySelector(".close");
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+}
+
+// Call checkAchievements after each game
+function endGame(isWin) {
+    document.getElementById('guess-button').disabled = true;
+    document.getElementById('guess-input').disabled = true;
+    checkAchievements(isWin, maxAttempts - attempts + 1);
+}
+
+// Tutorial button
+document.getElementById("tutorial-button").addEventListener("click", () => {
+    showModal(tutorialContent);
+});
 
 // Tutorial content
 const tutorialContent = `
@@ -277,94 +365,42 @@ const tutorialContent = `
     </ol>
 `;
 
-// Modal functionality
-const modal = document.getElementById("modal");
-const modalText = document.getElementById("modal-text");
-const closeBtn = document.getElementsByClassName("close")[0];
+// Stats button
+document.getElementById("show-stats-button").addEventListener("click", displayStats);
 
-function showModal(content) {
-    modalText.innerHTML = content;
-    modal.style.display = "block";
-}
+function displayStats() {
+    const stats = JSON.parse(localStorage.getItem('stats')) || { gamesPlayed: 0, gamesWon: 0, currentStreak: 0, maxStreak: 0 };
+    const guessDistribution = JSON.parse(localStorage.getItem('guessDistribution')) || [0, 0, 0, 0, 0, 0];
 
-closeBtn.onclick = function() {
-    modal.style.display = "none";
-}
-
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-
-// Tutorial button
-document.getElementById("tutorial-button").addEventListener("click", () => {
-    showModal(tutorialContent);
-});
-
-// Achievements button
-document.getElementById("achievements-button").addEventListener("click", () => {
-    let achievementsContent = "<h2>Achievements</h2><ul>";
-    for (let key in achievements) {
-        achievementsContent += `<li>${achievements[key].name}: ${achievements[key].description} - ${achievements[key].unlocked ? "Unlocked" : "Locked"}</li>`;
-    }
-    achievementsContent += "</ul>";
-    showModal(achievementsContent);
-});
-
-// Theme toggle
-const themeToggle = document.getElementById("theme-toggle");
-themeToggle.addEventListener("change", () => {
-    document.body.classList.toggle("dark-mode");
-    localStorage.setItem("darkMode", themeToggle.checked);
-});
-
-// Sound toggle
-const soundToggle = document.getElementById("sound-toggle");
-let soundEnabled = true;
-soundToggle.addEventListener("change", () => {
-    soundEnabled = soundToggle.checked;
-    localStorage.setItem("soundEnabled", soundEnabled);
-});
-
-// Load user preferences
-if (localStorage.getItem("darkMode") === "true") {
-    themeToggle.checked = true;
-    document.body.classList.add("dark-mode");
-}
-if (localStorage.getItem("soundEnabled") === "false") {
-    soundToggle.checked = false;
-    soundEnabled = false;
-}
-
-// Function to play sound
-function playSound(soundName) {
-    if (soundEnabled) {
-        // Implement sound playing logic here
-        console.log(`Playing sound: ${soundName}`);
-    }
-}
-
-// Update checkAchievements function
-function checkAchievements(isWin) {
-    if (!achievements.firstWin.unlocked && isWin) {
-        achievements.firstWin.unlocked = true;
-        showModal("Achievement Unlocked: First Win!");
-    }
-    // Add more achievement checks here
-    if (!achievements.tenGames.unlocked && gamesPlayed >= 10) {
-        achievements.tenGames.unlocked = true;
-        showModal("Achievement Unlocked: Dedicated Player!");
-    }
-    if (!achievements.perfectGame.unlocked && isWin && currentScore === maxScore) {
-        achievements.perfectGame.unlocked = true;
-        showModal("Achievement Unlocked: Perfect Game!");
-    }
-}
-
-// Call checkAchievements after each game
-// For example, in your existing game logic:
-function endGame(isWin) {
-    // ... existing end game logic ...
-    checkAchievements();
+    let statsContent = `
+        <h2>Statistics</h2>
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">${stats.gamesPlayed}</div>
+                <div>Played</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">${Math.round((stats.gamesWon / stats.gamesPlayed) * 100) || 0}%</div>
+                <div>Win %</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">${stats.currentStreak}</div>
+                <div>Current Streak</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">${stats.maxStreak}</div>
+                <div>Max Streak</div>
+            </div>
+        </div>
+        <h3>Guess Distribution</h3>
+        <div class="guess-distribution">
+            ${guessDistribution.map((count, index) => `
+                <div class="guess-bar">
+                    <div class="guess-label">${index + 1}</div>
+                    <div class="guess-count" style="width: ${(count / Math.max(...guessDistribution)) * 100}%">${count}</div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+    showModal(statsContent);
 }
