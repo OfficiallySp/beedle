@@ -166,19 +166,6 @@ function updateStats(isWin, attempts) {
     displayStats();
 }
 
-function updateLeaderboard(attemptsData) {
-    const leaderboard = document.getElementById('leaderboard');
-    leaderboard.innerHTML = '<h4>Hive of Fame</h4>';
-
-    attemptsData.sort((a, b) => a.attempts - b.attempts || new Date(a.date) - new Date(b.date));
-
-    attemptsData.forEach((entry, index) => {
-        const entryDiv = document.createElement('div');
-        entryDiv.innerText = `${index + 1}. Date: ${entry.date} - Attempts: ${entry.attempts}`;
-        leaderboard.appendChild(entryDiv);
-    });
-}
-
 const themeToggle = document.getElementById("theme-toggle");
 themeToggle.addEventListener("change", () => {
     document.body.classList.toggle("dark-mode");
