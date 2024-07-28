@@ -9,9 +9,8 @@ const bees = [
     "Festive", "Gummy", "Photon", "Puppy", "Tabby", "Vicious", "Windy"
 ];
 
-// Function to get the daily bee
 function getDailyBee() {
-    const start = new Date(2024, 0, 1); // Start date (e.g., January 1, 2024)
+    const start = new Date(2024, 0, 1);
     const now = new Date();
     const diff = Math.floor((now - start) / (1000 * 60 * 60 * 24));
     return bees[diff % bees.length].toLowerCase();
@@ -21,12 +20,11 @@ let answer = getDailyBee();
 let attempts = 6;
 const maxAttempts = attempts;
 
-// Load sound effects
 const correctSound = new Audio('sound/correct.mp3');
 const incorrectSound = new Audio('sound/incorrect.mp3');
-const flipSound = new Audio('sound/flip.mp3'); // Sound for letter flip
-const letterCorrectSound = new Audio('sound/letter_correct.mp3'); // Sound for correct letters
-const letterPresentSound = new Audio('sound/letter_present.mp3'); // Sound for letters in the word
+const flipSound = new Audio('sound/flip.mp3'); 
+const letterCorrectSound = new Audio('sound/letter_correct.mp3'); 
+const letterPresentSound = new Audio('sound/letter_present.mp3'); 
 
 document.getElementById('guess-input').addEventListener('input', () => {
     const guess = document.getElementById('guess-input').value.toLowerCase();
@@ -47,13 +45,13 @@ document.getElementById('reset-button').addEventListener('click', () => {
         localStorage.removeItem("attemptsData");
         localStorage.removeItem("stats");
         localStorage.removeItem("achievements");
-        location.reload(); // Reload the page to reset the game state
+        location.reload();
     }
 });
 
 function submitGuess() {
     if (attempts <= 0 || document.getElementById('guess-button').disabled) {
-        return; // Ignore input if the game is over or the button is disabled
+        return;
     }
 
     const guess = document.getElementById('guess-input').value.toLowerCase();
@@ -67,6 +65,7 @@ function submitGuess() {
     document.getElementById('guess-input').focus();
 }
 
+// Check the submitted guess against the answer
 function checkGuess(guess) {
     const guessRow = document.createElement('div');
     guessRow.className = 'guess-row';
@@ -80,25 +79,18 @@ function checkGuess(guess) {
         guessRow.appendChild(guessBox);
 
         setTimeout(() => {
-            // Play flip sound for each letter
-            if (soundEnabled) {
-                playSound('flip');
-            }
+            if (soundEnabled) playSound('flip');
 
             if (answerArray[index] === letter) {
                 guessBox.classList.add('correct');
-                if (soundEnabled) {
-                    playSound('letter_correct');
-                }
+                if (soundEnabled) playSound('letter_correct');
             } else if (answerArray.includes(letter)) {
                 guessBox.classList.add('present');
-                if (soundEnabled) {
-                    playSound('letter_present');
-                }
+                if (soundEnabled) playSound('letter_present');
             } else {
                 guessBox.classList.add('absent');
             }
-        }, index * 300); // Speed of animations
+        }, index * 300);
     });
 
     document.getElementById('guess-grid').appendChild(guessRow);
@@ -107,27 +99,19 @@ function checkGuess(guess) {
 
     setTimeout(() => {
         if (guess === answer) {
-            setTimeout(() => {
-                if (soundEnabled) {
-                    playSound('correct');
-                }
-                alert('Congratulations! You guessed the bee!');
-            }, 100);
+            if (soundEnabled) playSound('correct');
+            alert('Congratulations! You guessed the bee!');
             updateStats(true, maxAttempts - attempts);
             endGame(true);
             showBeeImage();
         } else if (attempts === 0) {
-            setTimeout(() => {
-                if (soundEnabled) {
-                    playSound('incorrect');
-                }
-                alert(`Game Over! The bee was ${answer}`);
-            }, 100);
+            if (soundEnabled) playSound('incorrect');
+            alert(`Game Over! The bee was ${answer}`);
             updateStats(false, maxAttempts);
             endGame(false);
             showBeeImage();
         }
-    }, guessArray.length * 500 + 150);
+    }, guessArray.length * 300 + 150);
 }
 
 function endGame(isWin) {
@@ -142,7 +126,6 @@ function showBeeImage() {
     beeImage.src = `bee/${answer.replace(/ /g, '_')}.png`;
 }
 
-// Countdown Timer
 function updateCountdown() {
     const now = new Date();
     const nextMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
@@ -155,13 +138,11 @@ function updateCountdown() {
     document.getElementById('timer').innerText = `${hours}h ${minutes}m ${seconds}s`;
 }
 
-// Update countdown every second
 setInterval(updateCountdown, 1000);
 
-// Initialize countdown
 updateCountdown();
 
-// Stats and streak management
+// Initialize or load stats from localStorage
 let stats = JSON.parse(localStorage.getItem('stats')) || {
     gamesPlayed: 0,
     gamesWon: 0,
@@ -170,6 +151,7 @@ let stats = JSON.parse(localStorage.getItem('stats')) || {
     guessDistribution: [0, 0, 0, 0, 0, 0]
 };
 
+// Update stats after each game
 function updateStats(isWin, attempts) {
     stats.gamesPlayed++;
     if (isWin) {
@@ -184,69 +166,10 @@ function updateStats(isWin, attempts) {
     displayStats();
 }
 
-function displayStats() {
-    const statsModal = document.createElement('div');
-    statsModal.className = 'stats-modal';
-    statsModal.innerHTML = `
-        <h2>STATISTICS</h2>
-        <div class="stats-container">
-            <div class="stat-item">
-                <div class="stat-number">${stats.gamesPlayed}</div>
-                <div class="stat-label">Played</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">${Math.round((stats.gamesWon / stats.gamesPlayed) * 100) || 0}</div>
-                <div class="stat-label">Win %</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">${stats.currentStreak}</div>
-                <div class="stat-label">Current Streak</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number">${stats.maxStreak}</div>
-                <div class="stat-label">Max Streak</div>
-            </div>
-        </div>
-        <h3>GUESS DISTRIBUTION</h3>
-        <div class="guess-distribution">
-            ${stats.guessDistribution.map((count, index) => `
-                <div class="guess-bar">
-                    <div class="guess-label">${index + 1}</div>
-                    <div class="guess-count" style="width: ${(count / Math.max(...stats.guessDistribution)) * 100}%">${count}</div>
-                </div>
-            `).join('')}
-        </div>
-        <button id="close-stats">Close</button>
-    `;
-    document.body.appendChild(statsModal);
-    document.getElementById('close-stats').addEventListener('click', () => statsModal.remove());
-}
-
-// Daily streak and leaderboard
-function updateStreak(isWin) {
-    let streak = parseInt(localStorage.getItem('dailyStreak')) || 0;
-    let attemptsData = JSON.parse(localStorage.getItem('attemptsData')) || [];
-
-    if (isWin) {
-        streak++;
-    } else {
-        streak = 0;
-    }
-
-    attemptsData.push({ date: new Date().toDateString(), attempts: maxAttempts - attempts });
-    localStorage.setItem('dailyStreak', streak);
-    localStorage.setItem('attemptsData', JSON.stringify(attemptsData));
-
-    document.getElementById('streak').innerText = `Daily Streak: ${streak}`;
-
-    updateLeaderboard(attemptsData);
-}
-
 function updateLeaderboard(attemptsData) {
     const leaderboard = document.getElementById('leaderboard');
     leaderboard.innerHTML = '<h4>Leaderboard</h4>';
 
-    // Sort by attempts and then by date
     attemptsData.sort((a, b) => a.attempts - b.attempts || new Date(a.date) - new Date(b.date));
 
     attemptsData.forEach((entry, index) => {
@@ -256,14 +179,12 @@ function updateLeaderboard(attemptsData) {
     });
 }
 
-// Theme toggle
 const themeToggle = document.getElementById("theme-toggle");
 themeToggle.addEventListener("change", () => {
     document.body.classList.toggle("dark-mode");
     localStorage.setItem("darkMode", themeToggle.checked);
 });
 
-// Sound toggle
 const soundToggle = document.getElementById("sound-toggle");
 let soundEnabled = localStorage.getItem("soundEnabled") !== "false";
 soundToggle.checked = soundEnabled;
@@ -272,13 +193,11 @@ soundToggle.addEventListener("change", () => {
     localStorage.setItem("soundEnabled", soundEnabled);
 });
 
-// Load user preferences
 if (localStorage.getItem("darkMode") === "true") {
     themeToggle.checked = true;
     document.body.classList.add("dark-mode");
 }
 
-// Function to play sound
 function playSound(soundName) {
     if (soundEnabled) {
         const sound = new Audio(`sound/${soundName}.mp3`);
@@ -286,14 +205,12 @@ function playSound(soundName) {
     }
 }
 
-// Achievements
 let achievements = JSON.parse(localStorage.getItem('achievements')) || {
     firstWin: { name: "First Win", description: "Win your first game", unlocked: false },
     threeInARow: { name: "Hat Trick", description: "Win three games in a row", unlocked: false },
     perfectGame: { name: "Perfect Game", description: "Win in just one attempt", unlocked: false }
 };
 
-// Achievements button
 document.getElementById("achievements-button").addEventListener("click", () => {
     let achievementsContent = "<h2>Achievements</h2><ul>";
     for (let key in achievements) {
@@ -303,7 +220,6 @@ document.getElementById("achievements-button").addEventListener("click", () => {
     showModal(achievementsContent);
 });
 
-// Update checkAchievements function
 function checkAchievements(isWin, attempts) {
     if (!achievements.firstWin.unlocked && isWin) {
         achievements.firstWin.unlocked = true;
@@ -313,24 +229,20 @@ function checkAchievements(isWin, attempts) {
         achievements.perfectGame.unlocked = true;
         showModal("Achievement Unlocked: Perfect Game!");
     }
-    // Add logic for threeInARow achievement here
     localStorage.setItem('achievements', JSON.stringify(achievements));
 }
 
-// Make sure this function is defined
 function showModal(content) {
     const modal = document.getElementById("modal");
     const modalText = document.getElementById("modal-text");
     modalText.innerHTML = content;
     modal.style.display = "block";
 
-    // Close button functionality
     const closeBtn = modal.querySelector(".close");
     closeBtn.onclick = function() {
         modal.style.display = "none";
     }
 
-    // Close modal when clicking outside
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
@@ -338,19 +250,16 @@ function showModal(content) {
     }
 }
 
-// Call checkAchievements after each game
 function endGame(isWin) {
     document.getElementById('guess-button').disabled = true;
     document.getElementById('guess-input').disabled = true;
     checkAchievements(isWin, maxAttempts - attempts + 1);
 }
 
-// Tutorial button
 document.getElementById("tutorial-button").addEventListener("click", () => {
     showModal(tutorialContent);
 });
 
-// Tutorial content
 const tutorialContent = `
     <h2>How to Play Beedle</h2>
     <ol>
@@ -365,14 +274,11 @@ const tutorialContent = `
     </ol>
 `;
 
-// Stats button
 document.getElementById("show-stats-button").addEventListener("click", displayStats);
 
+// Display game statistics
 function displayStats() {
-    const stats = JSON.parse(localStorage.getItem('stats')) || { gamesPlayed: 0, gamesWon: 0, currentStreak: 0, maxStreak: 0 };
-    const guessDistribution = JSON.parse(localStorage.getItem('guessDistribution')) || [0, 0, 0, 0, 0, 0];
-
-    let statsContent = `
+    const statsContent = `
         <h2>Statistics</h2>
         <div class="stats-container">
             <div class="stat-item">
@@ -394,10 +300,10 @@ function displayStats() {
         </div>
         <h3>Guess Distribution</h3>
         <div class="guess-distribution">
-            ${guessDistribution.map((count, index) => `
+            ${stats.guessDistribution.map((count, index) => `
                 <div class="guess-bar">
                     <div class="guess-label">${index + 1}</div>
-                    <div class="guess-count" style="width: ${(count / Math.max(...guessDistribution)) * 100}%">${count}</div>
+                    <div class="guess-count" style="width: ${(count / Math.max(...stats.guessDistribution)) * 100}%">${count}</div>
                 </div>
             `).join('')}
         </div>
