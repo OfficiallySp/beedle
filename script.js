@@ -40,7 +40,7 @@ document.getElementById('guess-input').addEventListener('keyup', (event) => {
 
 document.getElementById('guess-button').addEventListener('click', submitGuess);
 document.getElementById('reset-button').addEventListener('click', () => {
-    if (confirm("Are you sure you want to reset all data? This action cannot be undone.")) {
+    if (confirm("Are you sure you want to reset all data? This action cannot bee undone.")) {
         localStorage.removeItem("dailyStreak");
         localStorage.removeItem("attemptsData");
         localStorage.removeItem("stats");
@@ -56,7 +56,7 @@ function submitGuess() {
 
     const guess = document.getElementById('guess-input').value.toLowerCase();
     if (!bees.map(b => b.toLowerCase()).includes(guess)) {
-        alert("Invalid bee name. Please enter a valid bee.");
+        alert("Invalid bee name. Please enter a valid bee or buzz off!");
         return;
     }
 
@@ -100,13 +100,13 @@ function checkGuess(guess) {
     setTimeout(() => {
         if (guess === answer) {
             if (soundEnabled) playSound('correct');
-            alert('Congratulations! You guessed the bee!');
+            alert('Un-bee-lievable! You guessed the bee!');
             updateStats(true, maxAttempts - attempts);
             endGame(true);
             showBeeImage();
         } else if (attempts === 0) {
             if (soundEnabled) playSound('incorrect');
-            alert(`Game Over! The bee was ${answer}`);
+            alert(`Game Over! The bee was ${answer}. Better luck nectar time!`);
             updateStats(false, maxAttempts);
             endGame(false);
             showBeeImage();
@@ -168,7 +168,7 @@ function updateStats(isWin, attempts) {
 
 function updateLeaderboard(attemptsData) {
     const leaderboard = document.getElementById('leaderboard');
-    leaderboard.innerHTML = '<h4>Leaderboard</h4>';
+    leaderboard.innerHTML = '<h4>Hive of Fame</h4>';
 
     attemptsData.sort((a, b) => a.attempts - b.attempts || new Date(a.date) - new Date(b.date));
 
@@ -208,11 +208,16 @@ function playSound(soundName) {
 let achievements = JSON.parse(localStorage.getItem('achievements')) || {
     firstWin: { name: "First Win", description: "Win your first game", unlocked: false },
     threeInARow: { name: "Hat Trick", description: "Win three games in a row", unlocked: false },
-    perfectGame: { name: "Perfect Game", description: "Win in just one attempt", unlocked: false }
+    perfectGame: { name: "Perfect Game", description: "Win in just one attempt", unlocked: false },
+    fiveWins: { name: "Hive Five", description: "Win 5 games total", unlocked: false },
+    tenWins: { name: "Bee-lliant!", description: "Win 10 games total", unlocked: false },
+    lastSecond: { name: "Close Call", description: "Win on the last attempt", unlocked: false },
+    quickWin: { name: "Gifted Hasty Bee", description: "Win within 30 seconds", unlocked: false },
+    persistentPlayer: { name: "Natro-ural", description: "Play for 5 days in a row", unlocked: false }
 };
 
 document.getElementById("achievements-button").addEventListener("click", () => {
-    let achievementsContent = "<h2>Achievements</h2><ul>";
+    let achievementsContent = "<h2>Hive Achievements</h2><ul>";
     for (let key in achievements) {
         achievementsContent += `<li>${achievements[key].name}: ${achievements[key].description} - ${achievements[key].unlocked ? "Unlocked" : "Locked"}</li>`;
     }
@@ -229,8 +234,57 @@ function checkAchievements(isWin, attempts) {
         achievements.perfectGame.unlocked = true;
         showModal("Achievement Unlocked: Perfect Game!");
     }
+    if (isWin) {
+        if (!achievements.fiveWins.unlocked && stats.gamesWon === 5) {
+            achievements.fiveWins.unlocked = true;
+            showModal("Achievement Unlocked: Hive Five!");
+        }
+        if (!achievements.tenWins.unlocked && stats.gamesWon === 10) {
+            achievements.tenWins.unlocked = true;
+            showModal("Achievement Unlocked: Bee-lliant!");
+        }
+        if (!achievements.lastSecond.unlocked && attempts === maxAttempts) {
+            achievements.lastSecond.unlocked = true;
+            showModal("Achievement Unlocked: Close Call!");
+        }
+    }
+    if (isWin && !achievements.quickWin.unlocked) {
+        const gameTime = (new Date() - gameStartTime) / 1000; // in seconds
+        if (gameTime <= 30) {
+            achievements.quickWin.unlocked = true;
+            showModal("Achievement Unlocked: Gifted Hasty Bee!");
+        }
+    }
+    checkPersistentPlayer();
+    
     localStorage.setItem('achievements', JSON.stringify(achievements));
 }
+
+function checkPersistentPlayer() {
+    const lastPlayedDates = JSON.parse(localStorage.getItem('lastPlayedDates')) || [];
+    const today = new Date().toDateString();
+    
+    if (!lastPlayedDates.includes(today)) {
+        lastPlayedDates.push(today);
+        if (lastPlayedDates.length > 5) {
+            lastPlayedDates.shift();
+        }
+        localStorage.setItem('lastPlayedDates', JSON.stringify(lastPlayedDates));
+        
+        if (lastPlayedDates.length === 5 && !achievements.persistentPlayer.unlocked) {
+            achievements.persistentPlayer.unlocked = true;
+            showModal("Achievement Unlocked: Natro-ural!");
+        }
+    }
+}
+
+let gameStartTime;
+
+function startGame() {
+    gameStartTime = new Date();
+}
+
+window.onload = startGame;
 
 function showModal(content) {
     const modal = document.getElementById("modal");
@@ -250,12 +304,6 @@ function showModal(content) {
     }
 }
 
-function endGame(isWin) {
-    document.getElementById('guess-button').disabled = true;
-    document.getElementById('guess-input').disabled = true;
-    checkAchievements(isWin, maxAttempts - attempts + 1);
-}
-
 document.getElementById("tutorial-button").addEventListener("click", () => {
     showModal(tutorialContent);
 });
@@ -266,12 +314,13 @@ const tutorialContent = `
         <li>You have 6 attempts to guess the correct bee from Bee Swarm Simulator.</li>
         <li>After each guess, the color of the tiles will change to show how close your guess was:</li>
         <ul>
-            <li>Green: Correct letter in the correct position</li>
-            <li>Yellow: Correct letter but in the wrong position</li>
-            <li>Gray: Letter is not in the word</li>
+            <li>Green: Correct letter in the correct position (Sweet as honey!)</li>
+            <li>Yellow: Correct letter but in the wrong position (Almost there, busy bee!)</li>
+            <li>Gray: Letter is not in the word (Buzz off, wrong letter!)</li>
         </ul>
         <li>Keep guessing until you find the correct bee or run out of attempts!</li>
     </ol>
+    <p>Remember, bee positive and have fun!</p>
 `;
 
 document.getElementById("show-stats-button").addEventListener("click", displayStats);
@@ -279,26 +328,26 @@ document.getElementById("show-stats-button").addEventListener("click", displaySt
 // Display game statistics
 function displayStats() {
     const statsContent = `
-        <h2>Statistics</h2>
+        <h2>Hive Statistics</h2>
         <div class="stats-container">
             <div class="stat-item">
                 <div class="stat-number">${stats.gamesPlayed}</div>
-                <div>Played</div>
+                <div>Games Pollinated</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number">${Math.round((stats.gamesWon / stats.gamesPlayed) * 100) || 0}%</div>
-                <div>Win %</div>
+                <div>Honey Success Rate</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number">${stats.currentStreak}</div>
-                <div>Current Streak</div>
+                <div>Current Swarm</div>
             </div>
             <div class="stat-item">
                 <div class="stat-number">${stats.maxStreak}</div>
-                <div>Max Streak</div>
+                <div>Longest Honey Streak</div>
             </div>
         </div>
-        <h3>Guess Distribution</h3>
+        <h3>Guess Distribution (Honey Levels)</h3>
         <div class="guess-distribution">
             ${stats.guessDistribution.map((count, index) => `
                 <div class="guess-bar">

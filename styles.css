@@ -4,7 +4,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-image: url('bee.jpg');
+    background-image: url('day.png');
     background-size: cover;
     margin: 0;
 }
@@ -286,6 +286,7 @@ body.dark-mode .close:focus {
 body.dark-mode {
     background-color: #333;
     color: #fff;
+    background-image: url('night.png');
 }
 
 body.dark-mode .game-container {
