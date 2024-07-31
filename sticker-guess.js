@@ -65,10 +65,10 @@ const stickers = [
 
 let currentSticker;
 let attempts;
-const maxAttempts = 5;
+const maxAttempts = 1;
 let score = 0;
 let timer;
-const timeLimit = 15; // 15 seconds per question
+const timeLimit = 10; // 15 seconds per question
 
 let isMultipleChoice = true;
 
@@ -81,28 +81,20 @@ function initGame() {
     document.getElementById('result').textContent = '';
     document.getElementById('next-sticker').style.display = 'none';
     document.getElementById('sticker-image').style.filter = 'blur(10px)';
-    updateInputMethod();
+    toggleInputMethod();
     startTimer();
 }
 
-function updateInputMethod() {
-    const answerContainer = document.getElementById('answer-options');
-    answerContainer.innerHTML = '';
-    
+function toggleInputMethod() {
+    isMultipleChoice = !document.getElementById('toggle-input').checked;
     if (isMultipleChoice) {
         generateAnswerOptions();
     } else {
-        const input = document.createElement('input');
-        input.type = 'text';
-        input.id = 'guess-input';
-        input.placeholder = 'Enter your guess';
-        
-        const submitButton = document.createElement('button');
-        submitButton.textContent = 'Submit';
-        submitButton.addEventListener('click', () => checkGuess(input.value));
-        
-        answerContainer.appendChild(input);
-        answerContainer.appendChild(submitButton);
+        const answerContainer = document.getElementById('answer-options');
+        answerContainer.innerHTML = `
+            <input type="text" id="guess-input" placeholder="Enter your guess">
+            <button onclick="checkGuess(document.getElementById('guess-input').value)">Submit</button>
+        `;
     }
 }
 
@@ -198,11 +190,6 @@ function endGame() {
     document.getElementById('result').textContent = `Game over! The sticker was ${currentSticker}.`;
     document.getElementById('sticker-image').style.filter = 'blur(0)';
     document.getElementById('next-sticker').style.display = 'inline-block';
-}
-
-function toggleInputMethod() {
-    isMultipleChoice = !document.getElementById('toggle-input').checked;
-    updateInputMethod();
 }
 
 document.getElementById('next-sticker').addEventListener('click', initGame);

@@ -8,6 +8,20 @@
     <link rel="stylesheet" href="sticker-guess.css">
 </head>
 <body>
+    <nav class="navbar">
+        <ul>
+            <li><a href="index.html">Beedle</a></li>
+            <li><a href="sticker-guess.html" class="active">Sticker Guess</a></li>
+        </ul>
+        <div id="theme-toggle-container">
+            <label class="toggle">
+                <input type="checkbox" id="theme-toggle">
+                <span class="slider round"></span>
+                <span class="toggle-label">Night Bell</span>
+            </label>
+        </div>
+    </nav>
+
     <div class="game-container">
         <h1>Sticker Guess</h1>
         <h5>Guess the Bee Swarm Simulator Sticker</h5>
@@ -27,10 +41,24 @@
         <div id="remaining-attempts">Attempts left: 5</div>
         <div id="result"></div>
         <div class="footer-buttons">
-            <button id="next-sticker">Next Sticker</button>
             <a href="index.html" class="button back-to-beedle-button">Back to Beedle</a>
+            <button id="next-sticker">Next Sticker</button>
         </div>
     </div>
     <script src="sticker-guess.js"></script>
+    <script>
+        const themeToggle = document.getElementById("theme-toggle");
+        
+        // Check for saved theme preference
+        if (localStorage.getItem("darkMode") === "true") {
+            document.body.classList.add("dark-mode");
+            themeToggle.checked = true;
+        }
+
+        themeToggle.addEventListener("change", () => {
+            document.body.classList.toggle("dark-mode");
+            localStorage.setItem("darkMode", themeToggle.checked);
+        });
+    </script>
 </body>
 </html>

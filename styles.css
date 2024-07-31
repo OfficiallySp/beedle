@@ -14,6 +14,7 @@ body {
     background: rgba(255, 255, 255, 0.8);
     padding: 20px;
     border-radius: 10px;
+    margin-left: 200px; /* Add this line to make space for the navbar */
 }
 
 .guess-grid {
@@ -60,64 +61,6 @@ body {
     height: 30px;
     font-size: 18px;
     text-align: center;
-}
-
-#guess-button {
-    margin-top: 10px;
-    padding: 10px 20px;
-    font-size: 18px;
-}
-
-#remaining-attempts {
-    margin-top: 10px;
-}
-
-#countdown {
-    margin-top: 10px;
-    font-size: 14px;
-    color: gray;
-}
-
-#streak {
-    margin-top: 10px;
-    font-size: 14px;
-    color: gray;
-}
-
-#leaderboard {
-    margin-top: 10px;
-    font-size: 14px;
-    color: gray;
-}
-
-.stats-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    z-index: 1000;
-    text-align: center;
-}
-
-.stats-container {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: 20px;
-}
-
-.stat-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.stat-number {
-    font-size: 24px;
-    font-weight: bold;
 }
 
 .guess-distribution {
@@ -293,6 +236,24 @@ body.dark-mode .game-container {
     background: rgba(0, 0, 0, 0.8);
 }
 
+body.dark-mode .navbar {
+    background-color: #222;
+    box-shadow: 2px 0 5px rgba(255,255,255,0.1);
+}
+
+body.dark-mode .navbar a {
+    color: #fff;
+}
+
+body.dark-mode .navbar a.active, 
+body.dark-mode .navbar a:hover {
+    background-color: #444;
+}
+
+body.dark-mode .toggle-label {
+    color: #fff;
+}
+
 .footer-buttons {
     display: flex;
     justify-content: space-between;
@@ -364,4 +325,64 @@ body.dark-mode .game-container {
     padding: 2px 5px;
     min-width: 20px;
     text-align: right;
+}
+
+.navbar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 200px;
+    background-color: #f1f1f1;
+    padding: 20px 0;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.navbar li {
+    margin: 10px 0;
+}
+
+.navbar a {
+    display: block;
+    text-decoration: none;
+    color: #333;
+    font-weight: bold;
+    padding: 20px 20px;
+}
+
+.navbar a.active, .navbar a:hover {
+    background-color: #ddd;
+}
+
+#theme-toggle-container {
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+    .navbar {
+        width: 100%;
+        height: auto;
+        position: static;
+        flex-direction: row;
+    }
+
+    #theme-toggle-container {
+        padding: 10px;
+    }
+
+    .game-container {
+        margin-left: 0;
+    }
 }

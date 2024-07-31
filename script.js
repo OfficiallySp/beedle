@@ -166,12 +166,6 @@ function updateStats(isWin, attempts) {
     displayStats();
 }
 
-const themeToggle = document.getElementById("theme-toggle");
-themeToggle.addEventListener("change", () => {
-    document.body.classList.toggle("dark-mode");
-    localStorage.setItem("darkMode", themeToggle.checked);
-});
-
 const soundToggle = document.getElementById("sound-toggle");
 let soundEnabled = localStorage.getItem("soundEnabled") !== "false";
 soundToggle.checked = soundEnabled;
@@ -179,11 +173,6 @@ soundToggle.addEventListener("change", () => {
     soundEnabled = soundToggle.checked;
     localStorage.setItem("soundEnabled", soundEnabled);
 });
-
-if (localStorage.getItem("darkMode") === "true") {
-    themeToggle.checked = true;
-    document.body.classList.add("dark-mode");
-}
 
 function playSound(soundName) {
     if (soundEnabled) {
