@@ -14,8 +14,16 @@
         <div id="sticker-container">
             <img id="sticker-image" src="" alt="Sticker Image">
         </div>
-        <input type="text" id="guess-input" maxlength="30" placeholder="Enter your guess">
-        <button id="guess-button">Submit Guess</button>
+        <div id="answer-options"></div>
+        <div id="toggle-container">
+            <label class="toggle">
+                <input type="checkbox" id="toggle-input">
+                <span class="slider round"></span>
+            </label>
+            <span class="toggle-label">Hard Mode</span>
+        </div>
+        <div id="timer">Time left: 15s</div>
+        <div id="score">Score: 0</div>
         <div id="remaining-attempts">Attempts left: 5</div>
         <div id="result"></div>
         <div class="footer-buttons">
