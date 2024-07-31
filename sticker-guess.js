@@ -81,11 +81,11 @@ function initGame() {
     document.getElementById('result').textContent = '';
     document.getElementById('next-sticker').style.display = 'none';
     document.getElementById('sticker-image').style.filter = 'blur(10px)';
-    toggleInputMethod();
+    setInputMethod();
     startTimer();
 }
 
-function toggleInputMethod() {
+function setInputMethod() {
     isMultipleChoice = !document.getElementById('toggle-input').checked;
     if (isMultipleChoice) {
         generateAnswerOptions();
@@ -193,6 +193,6 @@ function endGame() {
 }
 
 document.getElementById('next-sticker').addEventListener('click', initGame);
-document.getElementById('toggle-input').addEventListener('change', toggleInputMethod);
+document.getElementById('toggle-input').addEventListener('change', setInputMethod);
 
 initGame();

@@ -50,7 +50,7 @@
             <button id="achievements-button">Badges</button>
             <button id="reset-button" class="danger-button">Reset ALL Data</button>
         </div>
-        <p>Version 31. Made by Shane (OfficiallySp)</p>
+        <p>Version 32. Made by Shane (OfficiallySp)</p>
     </div>
     <div id="modal" class="modal">
         <div class="modal-content">
@@ -59,20 +59,21 @@
         </div>
     </div>
     
-    <script src="script.js"></script>
     <script>
-        const themeToggle = document.getElementById("theme-toggle");
-        
-        // Check for saved theme preference
-        if (localStorage.getItem("darkMode") === "true") {
-            document.body.classList.add("dark-mode");
-            themeToggle.checked = true;
-        }
+        document.addEventListener("DOMContentLoaded", () => {
+            const themeToggle = document.getElementById("theme-toggle");
+            
+            if (localStorage.getItem("darkMode") === "true") {
+                document.body.classList.add("dark-mode");
+                themeToggle.checked = true;
+            }
 
-        themeToggle.addEventListener("change", () => {
-            document.body.classList.toggle("dark-mode");
-            localStorage.setItem("darkMode", themeToggle.checked);
+            themeToggle.addEventListener("change", () => {
+                document.body.classList.toggle("dark-mode");
+                localStorage.setItem("darkMode", themeToggle.checked);
+            });
         });
     </script>
+    <script src="script.js"></script>
 </body>
 </html>
