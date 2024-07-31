@@ -20,6 +20,9 @@ body {
 @media (max-width: 600px) {
     .game-container {
         margin-left: 0;
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
     }
 }
 
@@ -47,6 +50,14 @@ body {
     transition: background-color 0.25s, color 0.25s; /* Reduced transition duration */
 }
 
+@media (max-width: 600px) {
+    .guess-box {
+        width: 40px;
+        height: 40px;
+        font-size: 16px;
+    }
+}
+
 .correct {
     background-color: green;
     color: white;
@@ -67,6 +78,13 @@ body {
     height: 30px;
     font-size: 18px;
     text-align: center;
+}
+
+@media (max-width: 600px) {
+    #guess-input {
+        width: 150px;
+        font-size: 16px;
+    }
 }
 
 .guess-distribution {
@@ -106,21 +124,9 @@ body {
 }
 
 @media (max-width: 600px) {
-    .guess-box {
-        width: 30px;
-        height: 30px;
-        font-size: 14px;
-    }
-
-    #guess-input {
-        width: 150px;
-        height: 25px;
-        font-size: 14px;
-    }
-
     #guess-button {
+        font-size: 16px;
         padding: 8px 16px;
-        font-size: 14px;
     }
 }
 
@@ -201,6 +207,14 @@ input:checked + .slider:before {
     border: 1px solid #888;
     width: 80%;
     max-width: 600px;
+}
+
+@media (max-width: 600px) {
+    .modal-content {
+        width: 90%;
+        margin: 10% auto;
+        padding: 15px;
+    }
 }
 
 .close {
@@ -371,6 +385,20 @@ body.dark-mode .toggle-label {
     background-color: #ddd;
 }
 
+body.dark-mode .navbar {
+    background-color: #222;
+    box-shadow: 2px 0 5px rgba(255,255,255,0.1);
+}
+
+body.dark-mode .navbar a {
+    color: #fff;
+}
+
+body.dark-mode .navbar a.active, 
+body.dark-mode .navbar a:hover {
+    background-color: #444;
+}
+
 #theme-toggle-container {
     padding: 20px;
     margin-bottom: 20px;
@@ -381,14 +409,27 @@ body.dark-mode .toggle-label {
         width: 100%;
         height: auto;
         position: static;
+        flex-direction: column;
+        padding: 10px 0;
+    }
+
+    .navbar ul {
         flex-direction: row;
+        justify-content: center;
+    }
+
+    .navbar li {
+        margin: 0 10px;
     }
 
     #theme-toggle-container {
         padding: 10px;
+        display: flex;
+        justify-content: center;
     }
 
     .game-container {
         margin-left: 0;
+        padding: 10px;
     }
 }

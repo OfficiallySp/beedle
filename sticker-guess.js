@@ -196,3 +196,47 @@ document.getElementById('next-sticker').addEventListener('click', initGame);
 document.getElementById('toggle-input').addEventListener('change', setInputMethod);
 
 initGame();
+
+function addTouchSupport() {
+    document.addEventListener('touchstart', handleTouchStart, false);
+    document.addEventListener('touchmove', handleTouchMove, false);
+
+    let xDown = null;
+    let yDown = null;
+
+    function handleTouchStart(evt) {
+        xDown = evt.touches[0].clientX;
+        yDown = evt.touches[0].clientY;
+    }
+
+    function handleTouchMove(evt) {
+        if (!xDown || !yDown) {
+            return;
+        }
+
+        let xUp = evt.touches[0].clientX;
+        let yUp = evt.touches[0].clientY;
+
+        let xDiff = xDown - xUp;
+        let yDiff = yDown - yUp;
+
+        if (Math.abs(xDiff) > Math.abs(yDiff)) {
+            if (xDiff > 0) {
+                // Left swipe
+            } else {
+                // Right swipe
+            }
+        } else {
+            if (yDiff > 0) {
+                // Up swipe
+            } else {
+                // Down swipe
+            }
+        }
+
+        xDown = null;
+        yDown = null;
+    }
+}
+
+addTouchSupport();
