@@ -196,23 +196,25 @@ input:checked + .slider:before {
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
     background-color: rgba(0,0,0,0.4);
+    overflow: auto; /* Add this line to allow scrolling if content exceeds viewport */
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto;
+    margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
-    max-width: 600px;
+    width: 100%; 
+    max-width: 800px; 
+    max-height: 90vh; 
+    overflow-y: auto; 
 }
 
 @media (max-width: 600px) {
     .modal-content {
-        width: 90%;
-        margin: 10% auto;
+        width: 95%;
+        margin: 2% auto;
         padding: 15px;
     }
 }
@@ -319,34 +321,6 @@ body.dark-mode .toggle-label {
     font-weight: bold;
 }
 
-.guess-distribution {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-}
-
-.guess-bar {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 5px;
-}
-
-.guess-label {
-    width: 20px;
-    text-align: right;
-    margin-right: 5px;
-}
-
-.guess-count {
-    background-color: #787c7e;
-    color: white;
-    padding: 2px 5px;
-    min-width: 20px;
-    text-align: right;
-}
-
 .navbar {
     position: fixed;
     left: 0;
@@ -431,5 +405,75 @@ body.dark-mode .navbar a:hover {
     .game-container {
         margin-left: 0;
         padding: 10px;
+    }
+}
+
+.achievements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.achievement-item {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.achievement-item.unlocked {
+    background-color: #e6f7ff;
+    box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+
+.achievement-item.locked {
+    opacity: 0.5;
+}
+
+.achievement-icon img {
+    width: 128px;
+    height: 128px;
+    object-fit: contain;
+}
+
+.achievement-info h3 {
+    margin: 0 0 5px 0;
+    font-size: 1.1em;
+}
+
+.achievement-info p {
+    margin: 0;
+    font-size: 0.9em;
+}
+
+body.dark-mode .achievement-item {
+    background-color: #444;
+    color: #fff;
+}
+
+body.dark-mode .achievement-item.unlocked {
+    background-color: #1a3f5f;
+}
+
+@media (max-width: 800px) {
+    .achievements-grid {
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .achievement-icon img {
+        width: 64px;
+        height: 64px;
+    }
+
+    .achievement-info h3 {
+        font-size: 1em;
+    }
+
+    .achievement-info p {
+        font-size: 0.8em;
     }
 }

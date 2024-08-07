@@ -20,12 +20,6 @@ let answer = getDailyBee();
 let attempts = 6;
 const maxAttempts = attempts;
 
-const correctSound = new Audio('sound/correct.mp3');
-const incorrectSound = new Audio('sound/incorrect.mp3');
-const flipSound = new Audio('sound/flip.mp3'); 
-const letterCorrectSound = new Audio('sound/letter_correct.mp3'); 
-const letterPresentSound = new Audio('sound/letter_present.mp3'); 
-
 document.getElementById('guess-input').addEventListener('input', () => {
     const guess = document.getElementById('guess-input').value.toLowerCase();
     const submitButton = document.getElementById('guess-button');
@@ -79,14 +73,14 @@ function checkGuess(guess) {
         guessRow.appendChild(guessBox);
 
         setTimeout(() => {
-            if (soundEnabled) playSound('flip');
+            playSound('flip');
 
             if (answerArray[index] === letter) {
                 guessBox.classList.add('correct');
-                if (soundEnabled) playSound('letter_correct');
+                playSound('letter_correct');
             } else if (answerArray.includes(letter)) {
                 guessBox.classList.add('present');
-                if (soundEnabled) playSound('letter_present');
+                playSound('letter_present');
             } else {
                 guessBox.classList.add('absent');
             }
@@ -182,58 +176,90 @@ function playSound(soundName) {
 }
 
 let achievements = JSON.parse(localStorage.getItem('achievements')) || {
-    firstWin: { name: "First Win", description: "Win your first game", unlocked: false },
-    threeInARow: { name: "Hat Trick", description: "Win three games in a row", unlocked: false },
-    perfectGame: { name: "Perfect Game", description: "Win in just one attempt", unlocked: false },
-    fiveWins: { name: "Hive Five", description: "Win 5 games total", unlocked: false },
-    tenWins: { name: "Bee-lliant!", description: "Win 10 games total", unlocked: false },
-    lastSecond: { name: "Close Call", description: "Win on the last attempt", unlocked: false },
-    quickWin: { name: "Gifted Hasty Bee", description: "Win within 30 seconds", unlocked: false },
-    persistentPlayer: { name: "Natro-ural", description: "Play for 5 days in a row", unlocked: false }
+    firstWin: { name: "First Win", description: "Win your first game", unlocked: false, icon: "badge/firstWin.png" },
+    threeInARow: { name: "Hat Trick", description: "Win three games in a row", unlocked: false, icon: "badge/threeInARow.png" },
+    perfectGame: { name: "Perfect Game", description: "Win in just one attempt", unlocked: false, icon: "badge/perfectGame.png" },
+    fiveWins: { name: "High Five", description: "Win 5 games in total", unlocked: false, icon: "badge/fiveWins.png" },
+    tenWins: { name: "Bee-lliant!", description: "Win 10 games in total", unlocked: false, icon: "badge/tenWins.png" },
+    lastSecond: { name: "Close Call", description: "Win on the last attempt", unlocked: false, icon: "badge/lastSecond.png" },
+    quickWin: { name: "Speed Demon", description: "Win within 30 seconds", unlocked: false, icon: "badge/quickWin.png" },
+    persistentPlayer: { name: "Persistent", description: "Play for 5 days in a row", unlocked: false, icon: "badge/persistentPlayer.png" },
+    superStar: { name: "SuperStar", description: "Unlock all achievements", unlocked: false, icon: "badge/superStar.png" }
 };
 
 document.getElementById("achievements-button").addEventListener("click", () => {
-    let achievementsContent = "<h2>Hive Achievements</h2><ul>";
+    let achievementsContent = "<h2>Hive Achievements</h2><div class='achievements-grid'>";
     for (let key in achievements) {
-        achievementsContent += `<li>${achievements[key].name}: ${achievements[key].description} - ${achievements[key].unlocked ? "Unlocked" : "Locked"}</li>`;
+        const achievement = achievements[key];
+        achievementsContent += `
+            <div class="achievement-item ${achievement.unlocked ? 'unlocked' : 'locked'}">
+                <div class="achievement-icon">
+                    <img src="${achievement.icon}" alt="${achievement.name} icon">
+                </div>
+                <div class="achievement-info">
+                    <h3>${achievement.name}</h3>
+                    <p>${achievement.description}</p>
+                </div>
+            </div>
+        `;
     }
-    achievementsContent += "</ul>";
+    achievementsContent += "</div>";
     showModal(achievementsContent);
 });
 
+// Add this variable at the top of your script, with other global variables
+let consecutiveWins = parseInt(localStorage.getItem('consecutiveWins')) || 0;
+
+// Modify the checkAchievements function
 function checkAchievements(isWin, attempts) {
-    if (!achievements.firstWin.unlocked && isWin) {
-        achievements.firstWin.unlocked = true;
-        showModal("Achievement Unlocked: First Win!");
-    }
-    if (!achievements.perfectGame.unlocked && isWin && attempts === 1) {
-        achievements.perfectGame.unlocked = true;
-        showModal("Achievement Unlocked: Perfect Game!");
-    }
     if (isWin) {
+        consecutiveWins++;
+        stats.gamesWon++;
+
+        if (!achievements.firstWin.unlocked) {
+            achievements.firstWin.unlocked = true;
+            showModal("Achievement Unlocked: First Win!");
+        }
+
+        if (!achievements.threeInARow.unlocked && consecutiveWins === 3) {
+            achievements.threeInARow.unlocked = true;
+            showModal("Achievement Unlocked: Hat Trick!");
+        }
+
+        if (!achievements.perfectGame.unlocked && attempts === 1) {
+            achievements.perfectGame.unlocked = true;
+            showModal("Achievement Unlocked: Perfect Game!");
+        }
+
         if (!achievements.fiveWins.unlocked && stats.gamesWon === 5) {
             achievements.fiveWins.unlocked = true;
-            showModal("Achievement Unlocked: Hive Five!");
+            showModal("Achievement Unlocked: High Five!");
         }
+
         if (!achievements.tenWins.unlocked && stats.gamesWon === 10) {
             achievements.tenWins.unlocked = true;
             showModal("Achievement Unlocked: Bee-lliant!");
         }
+
         if (!achievements.lastSecond.unlocked && attempts === maxAttempts) {
             achievements.lastSecond.unlocked = true;
             showModal("Achievement Unlocked: Close Call!");
         }
-    }
-    if (isWin && !achievements.quickWin.unlocked) {
+
         const gameTime = (new Date() - gameStartTime) / 1000; // in seconds
-        if (gameTime <= 30) {
+        if (!achievements.quickWin.unlocked && gameTime <= 30) {
             achievements.quickWin.unlocked = true;
-            showModal("Achievement Unlocked: Gifted Hasty Bee!");
+            showModal("Achievement Unlocked: Speed Demon!");
         }
+    } else {
+        consecutiveWins = 0;
     }
+    
     checkPersistentPlayer();
     
+    localStorage.setItem('consecutiveWins', consecutiveWins);
     localStorage.setItem('achievements', JSON.stringify(achievements));
+    localStorage.setItem('stats', JSON.stringify(stats));
 }
 
 function checkPersistentPlayer() {
@@ -249,9 +275,21 @@ function checkPersistentPlayer() {
         
         if (lastPlayedDates.length === 5 && !achievements.persistentPlayer.unlocked) {
             achievements.persistentPlayer.unlocked = true;
-            showModal("Achievement Unlocked: Natro-ural!");
+            showModal("Achievement Unlocked: Persistent!");
         }
     }
+}
+
+// Make sure to call this function at the start of each game
+function startGame() {
+    gameStartTime = new Date();
+    // ... other game initialization code ...
+}
+
+// Ensure this function is called when the game ends
+function endGame(isWin) {
+    checkAchievements(isWin, maxAttempts - attempts + 1);
+    // ... other end game logic ...
 }
 
 let gameStartTime;
@@ -266,7 +304,7 @@ function showModal(content) {
     const modal = document.getElementById("modal");
     const modalText = document.getElementById("modal-text");
     modalText.innerHTML = content;
-    modal.style.display = "block";
+    modal.style.display = "block";  // Change this from "block" to "flex"
 
     const closeBtn = modal.querySelector(".close");
     closeBtn.onclick = function() {
