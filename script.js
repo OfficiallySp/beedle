@@ -541,3 +541,30 @@ document.getElementById("reset-button").addEventListener("click", () => {
     resetAllData();
   }
 });
+
+document.addEventListener('DOMContentLoaded', function() {
+    const navbarToggle = document.getElementById('navbar-toggle');
+    const navbar = document.querySelector('.navbar');
+
+    navbarToggle.addEventListener('click', function() {
+        navbar.classList.toggle('expanded');
+    });
+
+    // Close navbar when clicking outside
+    document.addEventListener('click', function(event) {
+        const isClickInside = navbar.contains(event.target) || navbarToggle.contains(event.target);
+        if (!isClickInside && navbar.classList.contains('expanded')) {
+            navbar.classList.remove('expanded');
+        }
+    });
+
+    // Close navbar when a link is clicked
+    const navLinks = document.querySelectorAll('.navbar a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            if (window.innerWidth <= 768) {
+                navbar.classList.remove('expanded');
+            }
+        });
+    });
+});
