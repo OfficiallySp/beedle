@@ -440,8 +440,8 @@ body.dark-mode .navbar a:hover {
 }
 
 .achievement-info h3 {
-  margin: 0 0 5px 0;
-  font-size: 1.1em;
+    margin: 0 0 5px;
+    font-size: 1.1em;
 }
 
 .achievement-info p {
