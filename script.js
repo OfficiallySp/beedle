@@ -239,61 +239,39 @@ let consecutiveWins = parseInt(localStorage.getItem('consecutiveWins')) || 0;
 
 // Modify the checkAchievements function
 function checkAchievements(isWin, attemptsUsed) {
-    console.log(`Checking achievements. isWin: ${isWin}, attemptsUsed: ${attemptsUsed}`);
-    
     if (isWin) {
         consecutiveWins++;
         stats.gamesWon++;
 
-        console.log(`Consecutive wins: ${consecutiveWins}`);
-
         if (!achievements.firstWin.unlocked) {
-            achievements.firstWin.unlocked = true;
-            showModal("Achievement Unlocked: First Win!");
-            saveAchievements();
+            unlockAchievement('firstWin');
         }
 
-        if (!achievements.threeInARow.unlocked) {
-            console.log(`Checking Hat Trick. Consecutive wins: ${consecutiveWins}`);
-            if (consecutiveWins === 3) {
-                console.log("Unlocking Hat Trick achievement!");
-                achievements.threeInARow.unlocked = true;
-                showModal("Achievement Unlocked: Hat Trick!");
-                saveAchievements();
-            } else {
-                console.log(`Hat Trick not unlocked. Need ${3 - consecutiveWins} more consecutive wins.`);
-            }
+        if (!achievements.threeInARow.unlocked && consecutiveWins === 3) {
+            unlockAchievement('threeInARow');
         }
 
         if (!achievements.fiveWins.unlocked && stats.gamesWon === 5) {
-            achievements.fiveWins.unlocked = true;
-            showModal("Achievement Unlocked: High Five!");
-            saveAchievements();
+            unlockAchievement('fiveWins');
         }
 
         if (!achievements.tenWins.unlocked && stats.gamesWon === 10) {
-            achievements.tenWins.unlocked = true;
-            showModal("Achievement Unlocked: Bee-lliant!");
-            saveAchievements();
+            unlockAchievement('tenWins');
         }
 
         if (!achievements.lastSecond.unlocked && attemptsUsed === maxAttempts) {
-            console.log("Unlocking Close Call achievement!");
-            achievements.lastSecond.unlocked = true;
-            showModal("Achievement Unlocked: Close Call!");
-            saveAchievements();
-        } else {
-            console.log(`Close Call not unlocked. attemptsUsed: ${attemptsUsed}, maxAttempts: ${maxAttempts}`);
+            unlockAchievement('lastSecond');
         }
 
-        const gameTime = (new Date() - gameStartTime) / 1000; // in seconds
+        if (!achievements.perfectGame.unlocked && attemptsUsed === 1) {
+            unlockAchievement('perfectGame');
+        }
+
+        const gameTime = (new Date() - gameStartTime) / 1000;
         if (!achievements.quickWin.unlocked && gameTime <= 30) {
-            achievements.quickWin.unlocked = true;
-            showModal("Achievement Unlocked: Speed Demon!");
-            saveAchievements();
+            unlockAchievement('quickWin');
         }
     } else {
-        console.log(`Game lost. Resetting consecutive wins from ${consecutiveWins} to 0.`);
         consecutiveWins = 0;
     }
     
@@ -301,13 +279,17 @@ function checkAchievements(isWin, attemptsUsed) {
     
     localStorage.setItem('consecutiveWins', consecutiveWins);
     localStorage.setItem('stats', JSON.stringify(stats));
-    logAchievements();
+}
+
+function unlockAchievement(achievementKey) {
+    achievements[achievementKey].unlocked = true;
+    showModal(`Achievement Unlocked: ${achievements[achievementKey].name}!`);
+    saveAchievements();
 }
 
 function checkPersistentPlayer() {
     const lastPlayedDates = JSON.parse(localStorage.getItem('lastPlayedDates')) || [];
-    const now = new Date();
-    const currentDay = testingMode ? now.getTime() : now.toDateString();
+    const currentDay = new Date().toDateString();
     
     if (!lastPlayedDates.includes(currentDay)) {
         lastPlayedDates.push(currentDay);
@@ -317,9 +299,7 @@ function checkPersistentPlayer() {
         localStorage.setItem('lastPlayedDates', JSON.stringify(lastPlayedDates));
         
         if (lastPlayedDates.length === 5 && !achievements.persistentPlayer.unlocked) {
-            achievements.persistentPlayer.unlocked = true;
-            showModal("Achievement Unlocked: Persistent!");
-            saveAchievements();
+            unlockAchievement('persistentPlayer');
         }
     }
 }
@@ -425,22 +405,6 @@ function displayStats() {
     showModal(statsContent);
 }
 
-function logAchievements() {
-    console.log("Current achievements state:");
-    for (let key in achievements) {
-        console.log(`${key}: ${achievements[key].unlocked}`);
-    }
-}
-
-function logGameState() {
-    console.log("Current game state:");
-    console.log(`Consecutive wins: ${consecutiveWins}`);
-    console.log(`Games won: ${stats.gamesWon}`);
-    console.log("Achievements:");
-    for (let key in achievements) {
-        console.log(`${key}: ${achievements[key].unlocked}`);
-    }
-}
 
 function resetAllData() {
     localStorage.removeItem("consecutiveWins");
@@ -456,13 +420,3 @@ document.getElementById('reset-button').addEventListener('click', () => {
         resetAllData();
     }
 });
-
-function setConsecutiveWins(num) {
-    consecutiveWins = num;
-    localStorage.setItem('consecutiveWins', consecutiveWins);
-    console.log(`Manually set consecutive wins to: ${consecutiveWins}`);
-    logGameState();
-}
-
-// You can call this function from the console for testing
-// e.g., setConsecutiveWins(2) before starting a new game
