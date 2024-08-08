@@ -385,23 +385,6 @@ body.dark-mode .toggle-label {
     }
 }
 
-@media (max-width: 480px) {
-    .navbar {
-        width: 100%;
-        height: auto;
-        position: static;
-    }
-
-    .navbar.expanded {
-        height: 100%;
-        position: fixed;
-    }
-
-    .game-container {
-        margin-left: 0;
-    }
-}
-
 .navbar ul {
   list-style-type: none;
   margin: 0;
@@ -444,36 +427,6 @@ body.dark-mode .navbar a:hover {
 #theme-toggle-container {
   padding: 20px;
   margin-bottom: 20px;
-}
-
-@media (max-width: 600px) {
-  .navbar {
-    width: 100%;
-    height: auto;
-    position: static;
-    flex-direction: column;
-    padding: 10px 0;
-  }
-
-  .navbar ul {
-    flex-direction: row;
-    justify-content: center;
-  }
-
-  .navbar li {
-    margin: 0 10px;
-  }
-
-  #theme-toggle-container {
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-  }
-
-  .game-container {
-    margin-left: 0;
-    padding: 10px;
-  }
 }
 
 .achievements-grid {
