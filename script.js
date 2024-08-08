@@ -54,6 +54,7 @@ function submitGuess() {
         return;
     }
 
+    attempts--; // Move this line here, before calling checkGuess
     checkGuess(guess);
     document.getElementById('guess-input').value = '';
     document.getElementById('guess-input').focus();
@@ -88,24 +89,45 @@ function checkGuess(guess) {
     });
 
     document.getElementById('guess-grid').appendChild(guessRow);
-    attempts--;
     document.getElementById('remaining-attempts').innerText = `Attempts left: ${attempts}`;
 
     setTimeout(() => {
         if (guess === answer) {
+            console.log("Correct guess!");
             if (soundEnabled) playSound('correct');
             alert('Un-bee-lievable! You guessed the bee!');
-            updateStats(true, maxAttempts - attempts);
+            const attemptsUsed = maxAttempts - attempts;
+            console.log(`Attempts used: ${attemptsUsed}`);
+            updateStats(true, attemptsUsed);
+            checkPerfectGame(attemptsUsed);
+            checkAchievements(true, attemptsUsed);
             endGame(true);
             showBeeImage();
         } else if (attempts === 0) {
             if (soundEnabled) playSound('incorrect');
             alert(`Game Over! The bee was ${answer}. Better luck nectar time!`);
+            consecutiveWins = 0;  // Reset consecutive wins on loss
+            localStorage.setItem('consecutiveWins', consecutiveWins);
             updateStats(false, maxAttempts);
+            checkAchievements(false, maxAttempts);
             endGame(false);
             showBeeImage();
         }
     }, guessArray.length * 300 + 150);
+}
+
+function checkPerfectGame(attemptsUsed) {
+    console.log(`Checking perfect game. Attempts used: ${attemptsUsed}`);
+    console.log(`Perfect game unlocked: ${achievements.perfectGame.unlocked}`);
+    if (attemptsUsed === 1 && !achievements.perfectGame.unlocked) {
+        console.log("Unlocking perfect game achievement!");
+        achievements.perfectGame.unlocked = true;
+        showModal("Achievement Unlocked: Perfect Game!");
+        saveAchievements();
+    } else {
+        console.log(`Not a perfect game. Attempts used: ${attemptsUsed}`);
+    }
+    logAchievements();
 }
 
 function endGame(isWin) {
@@ -187,6 +209,11 @@ let achievements = JSON.parse(localStorage.getItem('achievements')) || {
     superStar: { name: "SuperStar", description: "Unlock all achievements", unlocked: false, icon: "badge/superStar.png" }
 };
 
+// Function to save achievements
+function saveAchievements() {
+    localStorage.setItem('achievements', JSON.stringify(achievements));
+}
+
 document.getElementById("achievements-button").addEventListener("click", () => {
     let achievementsContent = "<h2>Hive Achievements</h2><div class='achievements-grid'>";
     for (let key in achievements) {
@@ -211,63 +238,79 @@ document.getElementById("achievements-button").addEventListener("click", () => {
 let consecutiveWins = parseInt(localStorage.getItem('consecutiveWins')) || 0;
 
 // Modify the checkAchievements function
-function checkAchievements(isWin, attempts) {
+function checkAchievements(isWin, attemptsUsed) {
+    console.log(`Checking achievements. isWin: ${isWin}, attemptsUsed: ${attemptsUsed}`);
+    
     if (isWin) {
         consecutiveWins++;
         stats.gamesWon++;
 
+        console.log(`Consecutive wins: ${consecutiveWins}`);
+
         if (!achievements.firstWin.unlocked) {
             achievements.firstWin.unlocked = true;
             showModal("Achievement Unlocked: First Win!");
+            saveAchievements();
         }
 
-        if (!achievements.threeInARow.unlocked && consecutiveWins === 3) {
-            achievements.threeInARow.unlocked = true;
-            showModal("Achievement Unlocked: Hat Trick!");
-        }
-
-        if (!achievements.perfectGame.unlocked && attempts === 1) {
-            achievements.perfectGame.unlocked = true;
-            showModal("Achievement Unlocked: Perfect Game!");
+        if (!achievements.threeInARow.unlocked) {
+            console.log(`Checking Hat Trick. Consecutive wins: ${consecutiveWins}`);
+            if (consecutiveWins === 3) {
+                console.log("Unlocking Hat Trick achievement!");
+                achievements.threeInARow.unlocked = true;
+                showModal("Achievement Unlocked: Hat Trick!");
+                saveAchievements();
+            } else {
+                console.log(`Hat Trick not unlocked. Need ${3 - consecutiveWins} more consecutive wins.`);
+            }
         }
 
         if (!achievements.fiveWins.unlocked && stats.gamesWon === 5) {
             achievements.fiveWins.unlocked = true;
             showModal("Achievement Unlocked: High Five!");
+            saveAchievements();
         }
 
         if (!achievements.tenWins.unlocked && stats.gamesWon === 10) {
             achievements.tenWins.unlocked = true;
             showModal("Achievement Unlocked: Bee-lliant!");
+            saveAchievements();
         }
 
-        if (!achievements.lastSecond.unlocked && attempts === maxAttempts) {
+        if (!achievements.lastSecond.unlocked && attemptsUsed === maxAttempts) {
+            console.log("Unlocking Close Call achievement!");
             achievements.lastSecond.unlocked = true;
             showModal("Achievement Unlocked: Close Call!");
+            saveAchievements();
+        } else {
+            console.log(`Close Call not unlocked. attemptsUsed: ${attemptsUsed}, maxAttempts: ${maxAttempts}`);
         }
 
         const gameTime = (new Date() - gameStartTime) / 1000; // in seconds
         if (!achievements.quickWin.unlocked && gameTime <= 30) {
             achievements.quickWin.unlocked = true;
             showModal("Achievement Unlocked: Speed Demon!");
+            saveAchievements();
         }
     } else {
+        console.log(`Game lost. Resetting consecutive wins from ${consecutiveWins} to 0.`);
         consecutiveWins = 0;
     }
     
     checkPersistentPlayer();
     
     localStorage.setItem('consecutiveWins', consecutiveWins);
-    localStorage.setItem('achievements', JSON.stringify(achievements));
     localStorage.setItem('stats', JSON.stringify(stats));
+    logAchievements();
 }
 
 function checkPersistentPlayer() {
     const lastPlayedDates = JSON.parse(localStorage.getItem('lastPlayedDates')) || [];
-    const today = new Date().toDateString();
+    const now = new Date();
+    const currentDay = testingMode ? now.getTime() : now.toDateString();
     
-    if (!lastPlayedDates.includes(today)) {
-        lastPlayedDates.push(today);
+    if (!lastPlayedDates.includes(currentDay)) {
+        lastPlayedDates.push(currentDay);
         if (lastPlayedDates.length > 5) {
             lastPlayedDates.shift();
         }
@@ -276,35 +319,43 @@ function checkPersistentPlayer() {
         if (lastPlayedDates.length === 5 && !achievements.persistentPlayer.unlocked) {
             achievements.persistentPlayer.unlocked = true;
             showModal("Achievement Unlocked: Persistent!");
+            saveAchievements();
         }
     }
-}
-
-// Make sure to call this function at the start of each game
-function startGame() {
-    gameStartTime = new Date();
-    // ... other game initialization code ...
-}
-
-// Ensure this function is called when the game ends
-function endGame(isWin) {
-    checkAchievements(isWin, maxAttempts - attempts + 1);
-    // ... other end game logic ...
 }
 
 let gameStartTime;
 
 function startGame() {
     gameStartTime = new Date();
+    console.log(`Starting new game. Current consecutive wins: ${consecutiveWins}`);
+    logGameState();
 }
 
-window.onload = startGame;
+// Function to load achievements at the start of the game
+function loadAchievements() {
+    const savedAchievements = JSON.parse(localStorage.getItem('achievements'));
+    if (savedAchievements) {
+        for (let key in savedAchievements) {
+            if (achievements.hasOwnProperty(key)) {
+                achievements[key].unlocked = savedAchievements[key].unlocked;
+            }
+        }
+    }
+    logAchievements();
+}
+
+// Call this function when the game starts
+window.onload = function() {
+    loadAchievements();
+    startGame();
+};
 
 function showModal(content) {
     const modal = document.getElementById("modal");
     const modalText = document.getElementById("modal-text");
     modalText.innerHTML = content;
-    modal.style.display = "block";  // Change this from "block" to "flex"
+    modal.style.display = "block";
 
     const closeBtn = modal.querySelector(".close");
     closeBtn.onclick = function() {
@@ -373,3 +424,45 @@ function displayStats() {
     `;
     showModal(statsContent);
 }
+
+function logAchievements() {
+    console.log("Current achievements state:");
+    for (let key in achievements) {
+        console.log(`${key}: ${achievements[key].unlocked}`);
+    }
+}
+
+function logGameState() {
+    console.log("Current game state:");
+    console.log(`Consecutive wins: ${consecutiveWins}`);
+    console.log(`Games won: ${stats.gamesWon}`);
+    console.log("Achievements:");
+    for (let key in achievements) {
+        console.log(`${key}: ${achievements[key].unlocked}`);
+    }
+}
+
+function resetAllData() {
+    localStorage.removeItem("consecutiveWins");
+    localStorage.removeItem("achievements");
+    localStorage.removeItem("stats");
+    localStorage.removeItem("lastPlayedDates");
+    location.reload();
+}
+
+// Add a button or some way to call this function for testing purposes
+document.getElementById('reset-button').addEventListener('click', () => {
+    if (confirm("Are you sure you want to reset all data? This action cannot bee undone.")) {
+        resetAllData();
+    }
+});
+
+function setConsecutiveWins(num) {
+    consecutiveWins = num;
+    localStorage.setItem('consecutiveWins', consecutiveWins);
+    console.log(`Manually set consecutive wins to: ${consecutiveWins}`);
+    logGameState();
+}
+
+// You can call this function from the console for testing
+// e.g., setConsecutiveWins(2) before starting a new game
