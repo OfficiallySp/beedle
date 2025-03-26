@@ -23,7 +23,7 @@
       </div>
       <ul id="navbar-menu">
         <li><a href="index.html" class="active">Beedle</a></li>
-        <li><a href="sticker-guess.html">NEW! Sticker Guess (Alpha)</a></li>
+        <li><a href="sticker-guess.html">Sticker Guess</a></li>
       </ul>
       <div id="theme-toggle-container">
         <label class="toggle">
@@ -103,6 +103,24 @@
         themeToggle.addEventListener("change", () => {
           document.body.classList.toggle("dark-mode");
           localStorage.setItem("darkMode", themeToggle.checked);
+        });
+
+        const navbarToggle = document.getElementById("navbar-toggle");
+        const navbar = document.querySelector(".navbar");
+
+        navbarToggle.addEventListener("click", () => {
+          navbar.classList.toggle("expanded");
+        });
+
+        const navLinks = document.querySelectorAll("#navbar-menu a");
+        const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+        navLinks.forEach(link => {
+          if (link.getAttribute("href") === currentPage) {
+            link.classList.add("active");
+          } else {
+            link.classList.remove("active");
+          }
         });
       });
     </script>

@@ -8,7 +8,6 @@
     />
     <title>Bee Swarm Simulator Sticker Guess</title>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="sticker-guess.css" />
   </head>
   <body>
     <nav class="navbar">
@@ -18,8 +17,8 @@
         <span></span>
       </div>
       <ul id="navbar-menu">
-        <li><a href="index.html" class="active">Beedle</a></li>
-        <li><a href="sticker-guess.html">Sticker Guess (Alpha)</a></li>
+        <li><a href="index.html">Beedle</a></li>
+        <li><a href="sticker-guess.html" class="active">Sticker Guess</a></li>
       </ul>
       <div id="theme-toggle-container">
         <label class="toggle">
@@ -57,17 +56,39 @@
     </div>
     <script src="sticker-guess.js"></script>
     <script>
-      const themeToggle = document.getElementById("theme-toggle");
+      document.addEventListener("DOMContentLoaded", () => {
+        // Theme toggle functionality
+        const themeToggle = document.getElementById("theme-toggle");
 
-      // Check for saved theme preference
-      if (localStorage.getItem("darkMode") === "true") {
-        document.body.classList.add("dark-mode");
-        themeToggle.checked = true;
-      }
+        if (localStorage.getItem("darkMode") === "true") {
+          document.body.classList.add("dark-mode");
+          themeToggle.checked = true;
+        }
 
-      themeToggle.addEventListener("change", () => {
-        document.body.classList.toggle("dark-mode");
-        localStorage.setItem("darkMode", themeToggle.checked);
+        themeToggle.addEventListener("change", () => {
+          document.body.classList.toggle("dark-mode");
+          localStorage.setItem("darkMode", themeToggle.checked);
+        });
+
+        // Navigation toggle for mobile
+        const navbarToggle = document.getElementById("navbar-toggle");
+        const navbar = document.querySelector(".navbar");
+
+        navbarToggle.addEventListener("click", () => {
+          navbar.classList.toggle("expanded");
+        });
+
+        // Set active navigation item
+        const navLinks = document.querySelectorAll("#navbar-menu a");
+        const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+        navLinks.forEach(link => {
+          if (link.getAttribute("href") === currentPage) {
+            link.classList.add("active");
+          } else {
+            link.classList.remove("active");
+          }
+        });
       });
     </script>
   </body>
