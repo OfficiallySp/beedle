@@ -426,6 +426,10 @@ function endGame() {
   document.getElementById("sticker-image").style.filter = "blur(0)";
   document.getElementById("next-sticker").style.display = "inline-block";
 
+  // Reset score to 0
+  score = 0;
+  updateScoreDisplay();
+
   // Disable all answer buttons
   disableAnswerButtons();
 }
