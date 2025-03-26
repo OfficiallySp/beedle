@@ -375,6 +375,9 @@ function checkGuess(guess) {
     score += 1; // Increase score based on remaining attempts
     updateScoreDisplay();
     document.getElementById("next-sticker").style.display = "inline-block";
+
+    // Disable all answer buttons
+    disableAnswerButtons();
   } else {
     attempts--;
     updateAttemptsDisplay();
@@ -422,6 +425,26 @@ function endGame() {
   ).textContent = `Game over! The sticker was ${currentSticker}.`;
   document.getElementById("sticker-image").style.filter = "blur(0)";
   document.getElementById("next-sticker").style.display = "inline-block";
+
+  // Disable all answer buttons
+  disableAnswerButtons();
+}
+
+// Add a new function to disable answer buttons
+function disableAnswerButtons() {
+  if (isMultipleChoice) {
+    const buttons = document.querySelectorAll('.answer-button');
+    buttons.forEach(button => {
+      button.disabled = true;
+      button.style.opacity = '0.6';
+      button.style.cursor = 'default';
+    });
+  } else {
+    const input = document.getElementById('guess-input');
+    const submitButton = input.nextElementSibling;
+    if (input) input.disabled = true;
+    if (submitButton) submitButton.disabled = true;
+  }
 }
 
 document.getElementById("next-sticker").addEventListener("click", initGame);
