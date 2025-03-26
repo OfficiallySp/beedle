@@ -4,15 +4,11 @@
     <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, shrink-to-fit=yes"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>Bee Swarm Simulator Wordle</title>
+    <title>Bee Swarm Simulator - Bee Match</title>
     <link rel="stylesheet" href="styles.css" />
-    <script
-      async
-      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1548903334937961"
-      crossorigin="anonymous"
-    ></script>
+    <link rel="stylesheet" href="bee-match.css" />
   </head>
   <body>
     <nav class="navbar">
@@ -22,9 +18,10 @@
         <span></span>
       </div>
       <ul id="navbar-menu">
-        <li><a href="index.html" class="active">Beedle</a></li>
+        <li><a href="index.html">Beedle</a></li>
         <li><a href="sticker-guess.html">Sticker Guess</a></li>
-        <li><a href="bee-match.html">Bee Match</a></li>
+        <li><a href="bee-match.html" class="active">Bee Match</a></li>
+        <li><a href="honey-rush.html">Honey Rush</a></li>
       </ul>
       <div id="theme-toggle-container">
         <label class="toggle">
@@ -36,33 +33,26 @@
     </nav>
 
     <div class="game-container">
-      <h1>Beedle</h1>
-      <h5>The Bee Swarm Simulator Wordle</h5>
-      <h3>Guess the bee in six attempts or less</h3>
-      <div id="guess-grid" class="guess-grid">
-        <!-- Guess rows will be dynamically generated here -->
+      <h1>Bee Match</h1>
+      <h5>Match the Bee Swarm Simulator bees</h5>
+
+      <div id="game-info">
+        <div id="score">Pairs: <span id="pairs-count">0</span>/<span id="total-pairs">8</span></div>
+        <div id="timer">Time: <span id="time-count">0</span>s</div>
       </div>
-      <img id="bee-image" src="" alt="Bee Image" />
-      <input
-        type="text"
-        id="guess-input"
-        maxlength="20"
-        placeholder="Enter your guess"
-      />
-      Bee
-      <button id="guess-button" disabled>Submit Guess</button>
-      <div id="remaining-attempts">
-        Attempts left before you're out of royal jelly: 6
+
+      <div id="difficulty-selector">
+        <button class="difficulty-button selected" data-pairs="8">Easy</button>
+        <button class="difficulty-button" data-pairs="12">Medium</button>
+        <button class="difficulty-button" data-pairs="18">Hard</button>
       </div>
-      <div id="countdown">
-        Time until next bee swarms in: <span id="timer"></span>
-        <p>Resets at 12:00 AM UTC</p>
+
+      <div id="game-board"></div>
+
+      <div id="game-controls">
+        <button id="new-game-button">New Game</button>
       </div>
-      <div class="button-container">
-        <button id="tutorial-button">
-          How to Play (No Vicious Bees Allowed!)
-        </button>
-      </div>
+
       <div id="toggle-container">
         <label class="toggle">
           <input type="checkbox" id="sound-toggle" checked />
@@ -70,21 +60,13 @@
           <span class="toggle-label">Sound</span>
         </label>
       </div>
+
       <div class="footer-buttons">
-        <button id="show-stats-button">Hive Stats</button>
-        <button id="achievements-button">Badges</button>
-        <button id="reset-button" class="danger-button">Reset ALL Data</button>
+        <button id="show-stats-button">Match Stats</button>
+        <a href="index.html" class="button back-to-beedle-button">Back to Beedle</a>
       </div>
-      <p>
-        Beedle Made by Shane (<a href="https://officiallysp.net" target="_blank"
-          >OfficiallySp</a
-        >)
-      </p>
-      <p>Badges created by Amy (aimzies)</p>
-      <p style="position: absolute; bottom: 5px; right: 20px; font-size: 24px">
-        Beedle version 26/03/2025
-      </p>
     </div>
+
     <div id="modal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
@@ -125,6 +107,6 @@
         });
       });
     </script>
-    <script src="script.js"></script>
+    <script src="bee-match.js"></script>
   </body>
 </html>
