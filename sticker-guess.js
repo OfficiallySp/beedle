@@ -528,3 +528,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+
+// Prevent context menu on mobile devices
+document.addEventListener('contextmenu', function(event) {
+  event.preventDefault();
+  return false;
+});
