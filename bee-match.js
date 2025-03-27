@@ -23,14 +23,14 @@ document.addEventListener("DOMContentLoaded", () => {
   let timerInterval;
   let soundEnabled = localStorage.getItem("soundEnabled") !== "false";
 
-  // Available bee images
-  const beeImages = [
-    "basic", "baby", "bomber", "brave", "bubble", "bucko", "bumble", "buoyant",
-    "carpenter", "cobalt", "commander", "cool", "crimson", "demo", "demon",
-    "diamond", "digital", "exhausted", "festive", "fire", "frosty", "fuzzy",
-    "gummy", "hasty", "honey", "lion", "looker", "music", "ninja", "photon",
-    "precise", "puppy", "rad", "rage", "rascal", "riley", "shocked", "shy",
-    "spicy", "stubborn", "tabby", "tadpole", "vector", "vicious", "windy"
+  // Available memory images
+  const memoryImages = [
+    "Mythic_Egg", "Gold_Egg", "Cloud_Vial", "Red_Extract", "Blue_Extract",
+    "Star_Treat", "Star_Egg", "Tropical_Drink", "Star_Jelly", "Coconut",
+    "Stinger", "Glue", "Diamond_Egg", "Night_Bell", "Glitter",
+    "Enzymes", "Oil", "Magic_Bean", "Field_Dice", "Micro-Converter",
+    "Jelly_Beans", "Honeysuckle", "Ticket", "Moon_Charm", "Gumdrops",
+    "Royal_Jelly", "Pineapple", "Strawberry", "Blueberry", "Sunflower_Seed", "Treat"
   ];
 
   // Sounds
@@ -47,7 +47,8 @@ document.addEventListener("DOMContentLoaded", () => {
     bestTime: {
       easy: Infinity,
       medium: Infinity,
-      hard: Infinity
+      hard: Infinity,
+      extreme: Infinity
     }
   };
 
@@ -56,6 +57,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const savedStats = localStorage.getItem("beeMatchStats");
     if (savedStats) {
       gameStats = JSON.parse(savedStats);
+      // Add extreme difficulty if it doesn't exist in saved stats
+      if (gameStats.bestTime && !gameStats.bestTime.extreme) {
+        gameStats.bestTime.extreme = Infinity;
+      }
     }
   }
 
@@ -114,28 +119,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Create game cards
   function createGameCards() {
-    // Shuffle and select bees for the current game
-    const shuffledBees = [...beeImages].sort(() => 0.5 - Math.random());
-    const selectedBees = shuffledBees.slice(0, totalPairsInGame);
+    // Shuffle and select memory items for the current game
+    const shuffledMemory = [...memoryImages].sort(() => 0.5 - Math.random());
+    const selectedMemory = shuffledMemory.slice(0, totalPairsInGame);
 
-    // Create pairs of cards (duplicate each bee)
-    cards = [...selectedBees, ...selectedBees]
+    // Create pairs of cards (duplicate each memory item)
+    cards = [...selectedMemory, ...selectedMemory]
       .sort(() => 0.5 - Math.random())
-      .map((bee, index) => ({
+      .map((item, index) => ({
         id: index,
-        name: bee,
-        image: `bee/${bee}.png`,
+        name: item,
+        image: `memory/${item}.png`,
         isFlipped: false,
         isMatched: false
       }));
+
+    // Set difficulty attribute for responsive styling
+    const difficulty = getDifficulty();
+    gameBoard.setAttribute('data-difficulty', difficulty);
 
     // Adjust grid columns based on difficulty
     if (totalPairsInGame <= 8) {
       gameBoard.style.gridTemplateColumns = "repeat(4, 1fr)";
     } else if (totalPairsInGame <= 12) {
       gameBoard.style.gridTemplateColumns = "repeat(6, 1fr)";
-    } else {
+    } else if (totalPairsInGame <= 18) {
       gameBoard.style.gridTemplateColumns = "repeat(6, 1fr)";
+    } else {
+      gameBoard.style.gridTemplateColumns = "repeat(8, 1fr)";
     }
 
     // Render the cards
@@ -155,7 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
       // Card back (showing when unflipped)
       const cardBack = document.createElement("div");
       cardBack.className = "card-face card-back";
-      cardBack.innerHTML = "🐝";
+      cardBack.innerHTML = "🍯";
 
       // Card front (showing when flipped)
       const cardFront = document.createElement("div");
@@ -256,7 +267,8 @@ document.addEventListener("DOMContentLoaded", () => {
   function getDifficulty() {
     if (totalPairsInGame <= 8) return "easy";
     if (totalPairsInGame <= 12) return "medium";
-    return "hard";
+    if (totalPairsInGame <= 18) return "hard";
+    return "extreme";
   }
 
   // Toggle sound
@@ -276,13 +288,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // Show game stats
   function showStats() {
     let statsHtml = `
-      <h2>Bee Match Stats</h2>
+      <h2>Memory Match Stats</h2>
       <p>Games Played: ${gameStats.gamesPlayed}</p>
       <h3>Best Times:</h3>
       <ul>
         <li>Easy: ${gameStats.bestTime.easy === Infinity ? "None" : gameStats.bestTime.easy + " seconds"}</li>
         <li>Medium: ${gameStats.bestTime.medium === Infinity ? "None" : gameStats.bestTime.medium + " seconds"}</li>
         <li>Hard: ${gameStats.bestTime.hard === Infinity ? "None" : gameStats.bestTime.hard + " seconds"}</li>
+        <li>Extreme: ${gameStats.bestTime.extreme === Infinity ? "None" : gameStats.bestTime.extreme + " seconds"}</li>
       </ul>
     `;
 
