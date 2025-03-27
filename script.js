@@ -82,11 +82,7 @@ document.getElementById("reset-button").addEventListener("click", () => {
       "Are you sure you want to reset all data? This action cannot bee undone."
     )
   ) {
-    localStorage.removeItem("dailyStreak");
-    localStorage.removeItem("attemptsData");
-    localStorage.removeItem("stats");
-    localStorage.removeItem("achievements");
-    location.reload();
+    resetAllData();
   }
 });
 
@@ -348,7 +344,7 @@ let consecutiveWins = parseInt(localStorage.getItem("consecutiveWins")) || 0;
 function checkAchievements(isWin, attemptsUsed) {
   if (isWin) {
     consecutiveWins++;
-    stats.gamesWon++;
+    localStorage.setItem("consecutiveWins", consecutiveWins);
 
     if (!achievements.firstWin.unlocked) {
       unlockAchievement("firstWin");
@@ -358,20 +354,16 @@ function checkAchievements(isWin, attemptsUsed) {
       unlockAchievement("threeInARow");
     }
 
-    if (!achievements.fiveWins.unlocked && stats.gamesWon === 5) {
+    if (!achievements.fiveWins.unlocked && stats.gamesWon >= 5) {
       unlockAchievement("fiveWins");
     }
 
-    if (!achievements.tenWins.unlocked && stats.gamesWon === 10) {
+    if (!achievements.tenWins.unlocked && stats.gamesWon >= 10) {
       unlockAchievement("tenWins");
     }
 
     if (!achievements.lastSecond.unlocked && attemptsUsed === maxAttempts) {
       unlockAchievement("lastSecond");
-    }
-
-    if (!achievements.perfectGame.unlocked && attemptsUsed === 1) {
-      unlockAchievement("perfectGame");
     }
 
     const gameTime = (new Date() - gameStartTime) / 1000;
@@ -380,11 +372,12 @@ function checkAchievements(isWin, attemptsUsed) {
     }
   } else {
     consecutiveWins = 0;
+    localStorage.setItem("consecutiveWins", consecutiveWins);
   }
 
   checkPersistentPlayer();
+  checkSuperStar(); // Check if all achievements are unlocked
 
-  localStorage.setItem("consecutiveWins", consecutiveWins);
   localStorage.setItem("stats", JSON.stringify(stats));
 }
 
@@ -395,22 +388,53 @@ function unlockAchievement(achievementKey) {
 }
 
 function checkPersistentPlayer() {
-  const lastPlayedDates =
-    JSON.parse(localStorage.getItem("lastPlayedDates")) || [];
+  const lastPlayedDates = JSON.parse(localStorage.getItem("lastPlayedDates")) || [];
   const currentDay = new Date().toDateString();
 
+  // Only add today if it's not already in the array
   if (!lastPlayedDates.includes(currentDay)) {
+    // Add today's date
     lastPlayedDates.push(currentDay);
-    if (lastPlayedDates.length > 5) {
+
+    // Sort dates chronologically (oldest to newest)
+    lastPlayedDates.sort((a, b) => new Date(a) - new Date(b));
+
+    // Keep only the most recent 5 days
+    while (lastPlayedDates.length > 5) {
       lastPlayedDates.shift();
     }
+
     localStorage.setItem("lastPlayedDates", JSON.stringify(lastPlayedDates));
 
-    if (
-      lastPlayedDates.length === 5 &&
-      !achievements.persistentPlayer.unlocked
-    ) {
-      unlockAchievement("persistentPlayer");
+    // If we have 5 dates, check if they're consecutive
+    if (lastPlayedDates.length === 5 && !achievements.persistentPlayer.unlocked) {
+      // Convert string dates to Date objects
+      const dateObjects = lastPlayedDates.map(d => new Date(d));
+
+      // Check if dates are consecutive
+      let consecutive = true;
+      for (let i = 1; i < dateObjects.length; i++) {
+        const prevDate = new Date(dateObjects[i-1]);
+        const currDate = new Date(dateObjects[i]);
+
+        // Set hours to noon to avoid timezone/DST issues
+        prevDate.setHours(12, 0, 0, 0);
+        currDate.setHours(12, 0, 0, 0);
+
+        // Calculate difference in days
+        const diffTime = currDate - prevDate;
+        const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+        // If the difference is not 1 day, dates aren't consecutive
+        if (diffDays !== 1) {
+          consecutive = false;
+          break;
+        }
+      }
+
+      if (consecutive) {
+        unlockAchievement("persistentPlayer");
+      }
     }
   }
 }
@@ -524,23 +548,10 @@ function displayStats() {
 }
 
 function resetAllData() {
-  localStorage.removeItem("consecutiveWins");
-  localStorage.removeItem("achievements");
-  localStorage.removeItem("stats");
-  localStorage.removeItem("lastPlayedDates");
+  // Clear all localStorage items
+  localStorage.clear();
   location.reload();
 }
-
-// Add a button or some way to call this function for testing purposes
-document.getElementById("reset-button").addEventListener("click", () => {
-  if (
-    confirm(
-      "Are you sure you want to reset all data? This action cannot bee undone."
-    )
-  ) {
-    resetAllData();
-  }
-});
 
 document.addEventListener('DOMContentLoaded', function() {
     const navbarToggle = document.getElementById('navbar-toggle');
@@ -574,3 +585,28 @@ document.addEventListener('contextmenu', function(event) {
   event.preventDefault();
   return false;
 });
+
+// Keep these functions
+function logAchievements() {
+  console.log("Current Achievements Status:");
+  for (let key in achievements) {
+    console.log(`${achievements[key].name}: ${achievements[key].unlocked ? "Unlocked" : "Locked"}`);
+  }
+}
+
+// Add function to check if all achievements are unlocked
+function checkSuperStar() {
+  if (achievements.superStar.unlocked) return; // Already unlocked
+
+  let allUnlocked = true;
+  for (let key in achievements) {
+    if (key !== 'superStar' && !achievements[key].unlocked) {
+      allUnlocked = false;
+      break;
+    }
+  }
+
+  if (allUnlocked) {
+    unlockAchievement("superStar");
+  }
+}
