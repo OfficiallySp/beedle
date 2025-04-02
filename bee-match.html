@@ -84,6 +84,53 @@
       </div>
     </div>
 
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const themeToggle = document.getElementById("theme-toggle");
+
+        if (localStorage.getItem("darkMode") === "true") {
+          document.body.classList.add("dark-mode");
+          themeToggle.checked = true;
+        }
+
+        themeToggle.addEventListener("change", () => {
+          document.body.classList.toggle("dark-mode");
+          localStorage.setItem("darkMode", themeToggle.checked);
+        });
+
+        const navbarToggle = document.getElementById("navbar-toggle");
+        const navbar = document.querySelector(".navbar");
+
+        navbarToggle.addEventListener("click", (event) => {
+          event.stopPropagation();
+          navbar.classList.toggle("expanded");
+        });
+
+        document.addEventListener("click", (event) => {
+          const isClickInside = navbar.contains(event.target) || navbarToggle.contains(event.target);
+          if (!isClickInside && navbar.classList.contains("expanded")) {
+            navbar.classList.remove("expanded");
+          }
+        });
+
+        const navLinks = document.querySelectorAll("#navbar-menu a");
+        const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+        navLinks.forEach(link => {
+          if (link.getAttribute("href") === currentPage) {
+            link.classList.add("active");
+          } else {
+            link.classList.remove("active");
+          }
+
+          link.addEventListener("click", () => {
+            if (window.innerWidth <= 768) {
+              navbar.classList.remove("expanded");
+            }
+          });
+        });
+      });
+    </script>
     <script src="bee-match.js"></script>
   </body>
 </html>

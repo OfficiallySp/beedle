@@ -215,7 +215,6 @@
     <script src="bss-trivia.js"></script>
     <script>
       document.addEventListener("DOMContentLoaded", () => {
-        // Theme toggle functionality
         const themeToggle = document.getElementById("theme-toggle");
 
         if (localStorage.getItem("darkMode") === "true") {
@@ -228,15 +227,21 @@
           localStorage.setItem("darkMode", themeToggle.checked);
         });
 
-        // Navigation toggle for mobile
         const navbarToggle = document.getElementById("navbar-toggle");
         const navbar = document.querySelector(".navbar");
 
-        navbarToggle.addEventListener("click", () => {
+        navbarToggle.addEventListener("click", (event) => {
+          event.stopPropagation();
           navbar.classList.toggle("expanded");
         });
 
-        // Set active navigation item
+        document.addEventListener("click", (event) => {
+          const isClickInside = navbar.contains(event.target) || navbarToggle.contains(event.target);
+          if (!isClickInside && navbar.classList.contains("expanded")) {
+            navbar.classList.remove("expanded");
+          }
+        });
+
         const navLinks = document.querySelectorAll("#navbar-menu a");
         const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
@@ -246,6 +251,12 @@
           } else {
             link.classList.remove("active");
           }
+
+          link.addEventListener("click", () => {
+            if (window.innerWidth <= 768) {
+              navbar.classList.remove("expanded");
+            }
+          });
         });
       });
     </script>

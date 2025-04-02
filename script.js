@@ -750,40 +750,7 @@ function resetAllData() {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    const navbarToggle = document.getElementById('navbar-toggle');
-    const navbar = document.querySelector('.navbar');
-
-    navbarToggle.addEventListener('click', function(event) {
-        event.stopPropagation(); // Prevent the click from bubbling up
-        navbar.classList.toggle('expanded');
-    });
-
-    // Close navbar when clicking outside
-    document.addEventListener('click', function(event) {
-        const isClickInsideNavbar = navbar.contains(event.target);
-        const isClickOnToggle = navbarToggle.contains(event.target);
-
-        if (!isClickInsideNavbar && !isClickOnToggle && navbar.classList.contains('expanded')) {
-            navbar.classList.remove('expanded');
-        }
-    });
-
-    // Close navbar when a link is clicked
-    const navLinks = document.querySelectorAll('.navbar a');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function() {
-            if (window.innerWidth <= 768) {
-                navbar.classList.remove('expanded');
-            }
-        });
-    });
-
-    // Handle window resize
-    window.addEventListener('resize', function() {
-        if (window.innerWidth > 600) {
-            navbar.classList.remove('expanded');
-        }
-    });
+    // Removing duplicate navbar code as it's already handled in index.html
 });
 
 // Prevent context menu on mobile devices
