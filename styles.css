@@ -224,10 +224,12 @@ body {
   display: inline-block;
   width: 60px;
   height: 34px;
-  background-color: #ccc;
+  background: linear-gradient(45deg, #FFD700, #FFA500);
+  border: 2px solid #8B4513;
   transition: 0.4s;
   border-radius: 34px;
   margin-right: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .slider:before {
@@ -240,14 +242,17 @@ body {
   background-color: white;
   transition: 0.4s;
   border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 input:checked + .slider {
-  background-color: #2196f3;
+  background: linear-gradient(45deg, #4A4A4A, #2A2A2A);
+  border-color: #666666;
 }
 
 input:checked + .slider:before {
   transform: translateX(26px);
+  background-color: #FFD700;
 }
 
 .toggle-label {
@@ -630,14 +635,22 @@ body.dark-mode .achievement-item.unlocked {
   display: inline-block;
   padding: 10px 20px;
   margin-top: 10px;
-  background-color: #4caf50;
-  color: white;
+  background: linear-gradient(45deg, #FFD700, #FFA500);
+  border: 2px solid #8B4513;
+  color: #8B4513;
   text-decoration: none;
-  border-radius: 5px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
 }
 
 .back-to-beedle-button:hover {
-  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(45deg, #FFA500, #FFD700);
 }
 
 /* Dark mode styles for sticker guess */
@@ -655,12 +668,13 @@ body.dark-mode .answer-button:hover {
 }
 
 body.dark-mode .back-to-beedle-button {
-  background-color: #2196f3;
-  color: white;
+  background: linear-gradient(45deg, #4A4A4A, #2A2A2A);
+  border-color: #666666;
+  color: #FFD700;
 }
 
 body.dark-mode .back-to-beedle-button:hover {
-  background-color: #0b7dda;
+  background: linear-gradient(45deg, #2A2A2A, #4A4A4A);
 }
 
 /* Version number styles */
@@ -675,4 +689,183 @@ body.dark-mode .back-to-beedle-button:hover {
   .version-number {
     font-size: 14px;
   }
+}
+
+/* Stat Guess Mode Styles */
+.stat-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto 20px;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.stat-cell {
+    flex: 1;
+    min-width: 60px;
+    height: 40px;
+    border: 1px solid #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+    text-transform: capitalize;
+    padding: 5px;
+    transition: background-color 0.25s, color 0.25s;
+    position: relative;
+}
+
+.stat-header {
+    font-weight: bold;
+    background-color: #f0f0f0;
+}
+
+.header-row {
+    margin-bottom: 10px;
+}
+
+.arrow {
+    font-weight: bold;
+    font-size: 16px;
+    margin-left: 2px;
+}
+
+body.dark-mode .stat-header {
+    background-color: #444;
+}
+
+@media (max-width: 768px) {
+    .stat-grid {
+        max-width: 100%;
+    }
+
+    .stat-cell {
+        min-width: 40px;
+        font-size: 12px;
+        padding: 3px;
+    }
+}
+
+@media (max-width: 600px) {
+    .stat-cell {
+        min-width: 30px;
+        font-size: 10px;
+        padding: 2px;
+    }
+}
+
+/* Base button styles */
+button {
+  background: linear-gradient(45deg, #FFD700, #FFA500);
+  border: 2px solid #8B4513;
+  border-radius: 8px;
+  color: #8B4513;
+  font-weight: bold;
+  padding: 10px 20px;
+  margin: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(45deg, #FFA500, #FFD700);
+}
+
+button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+button:disabled {
+  background: #cccccc;
+  border-color: #999999;
+  color: #666666;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Special button styles */
+.danger-button {
+  background: linear-gradient(45deg, #FF4444, #CC0000);
+  border-color: #8B0000;
+  color: white;
+}
+
+.danger-button:hover {
+  background: linear-gradient(45deg, #CC0000, #FF4444);
+}
+
+/* Dark mode button styles */
+body.dark-mode button {
+  background: linear-gradient(45deg, #4A4A4A, #2A2A2A);
+  border-color: #666666;
+  color: #FFD700;
+}
+
+body.dark-mode button:hover {
+  background: linear-gradient(45deg, #2A2A2A, #4A4A4A);
+}
+
+body.dark-mode .danger-button {
+  background: linear-gradient(45deg, #8B0000, #660000);
+  border-color: #4A0000;
+}
+
+body.dark-mode .danger-button:hover {
+  background: linear-gradient(45deg, #660000, #8B0000);
+}
+
+/* Button container styles */
+.button-container, .footer-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+/* Responsive button styles */
+@media (max-width: 600px) {
+  button {
+    padding: 8px 16px;
+    font-size: 12px;
+  }
+
+  .button-container, .footer-buttons {
+    gap: 5px;
+  }
+}
+
+/* Dark mode styles for toggles and back button */
+body.dark-mode .slider {
+  background: linear-gradient(45deg, #4A4A4A, #2A2A2A);
+  border-color: #666666;
+}
+
+body.dark-mode .back-to-beedle-button {
+  background: linear-gradient(45deg, #4A4A4A, #2A2A2A);
+  border-color: #666666;
+  color: #FFD700;
+}
+
+body.dark-mode .back-to-beedle-button:hover {
+  background: linear-gradient(45deg, #2A2A2A, #4A4A4A);
 }

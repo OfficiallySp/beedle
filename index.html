@@ -23,8 +23,8 @@
       </div>
       <ul id="navbar-menu">
         <li><a href="index.html" class="active">Beedle</a></li>
-        <li><a href="sticker-guess.html">Sticker Guess</a></li>
         <li><a href="bee-match.html">Memory Match</a></li>
+        <li><a href="sticker-guess.html">Sticker Guess (Alpha)</a></li>
       </ul>
       <div id="theme-toggle-container">
         <label class="toggle">
@@ -42,7 +42,7 @@
       <div id="guess-grid" class="guess-grid">
         <!-- Guess rows will be dynamically generated here -->
       </div>
-      <img id="bee-image" src="" alt="Bee Image" />
+      <img id="bee-image" src="" alt="" />
       <input
         type="text"
         id="guess-input"
@@ -68,6 +68,13 @@
           <input type="checkbox" id="sound-toggle" checked />
           <span class="slider round"></span>
           <span class="toggle-label">Sound</span>
+        </label>
+      </div>
+      <div id="toggle-container">
+        <label class="toggle">
+          <input type="checkbox" id="stat-mode-toggle" />
+          <span class="slider round"></span>
+          <span class="toggle-label">Stat Guess Mode</span>
         </label>
       </div>
       <div class="footer-buttons">
@@ -125,6 +132,7 @@
         });
       });
     </script>
+    <script src="beestats.js"></script>
     <script src="script.js"></script>
   </body>
 </html>

@@ -104,14 +104,6 @@
   font-size: 1.1em;
 }
 
-.game-complete {
-  text-align: center;
-  margin: 20px 0;
-  font-size: 1.5em;
-  color: #4caf50;
-  font-weight: bold;
-}
-
 /* Media queries for responsive design */
 @media (max-width: 768px) {
   #game-board {

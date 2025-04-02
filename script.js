@@ -54,10 +54,171 @@ function getDailyBee() {
   return bees[diff % bees.length].toLowerCase();
 }
 
-let answer = getDailyBee();
-let attempts = 6;
+let answer = getDailyBee(),
+  attempts = 6;
 const maxAttempts = attempts;
 
+// Stat Guess Mode variables
+let isStatGuessMode = false;
+const statModeToggle = document.getElementById("stat-mode-toggle");
+let statGrid = null;
+let statGuessActive = false;
+
+// Initialize stat guess mode toggle
+statModeToggle.checked = localStorage.getItem("statGuessMode") === "true";
+isStatGuessMode = statModeToggle.checked;
+
+// Add event listener for stat mode toggle
+statModeToggle.addEventListener("change", () => {
+  isStatGuessMode = statModeToggle.checked;
+  localStorage.setItem("statGuessMode", isStatGuessMode);
+  setupGame();
+});
+
+// Function to set up the game based on mode
+function setupGame() {
+  const guessGrid = document.getElementById("guess-grid");
+  const guessInput = document.getElementById("guess-input");
+  const guessButton = document.getElementById("guess-button");
+
+  // Clear existing content
+  guessGrid.innerHTML = "";
+  document.getElementById("remaining-attempts").innerText = `Attempts left before you're out of royal jelly: ${attempts}`;
+
+  if (isStatGuessMode) {
+    // Set up stat guess mode UI
+    guessGrid.classList.add("stat-grid");
+    createStatGrid();
+    updateStatDisplay();
+    document.querySelector("h3").innerText = "Guess the bee based on its stats in six attempts";
+  } else {
+    // Set up regular mode UI
+    guessGrid.classList.remove("stat-grid");
+    document.querySelector("h3").innerText = "Guess the bee in six attempts or less";
+  }
+
+  // Reset input and button state
+  guessInput.value = "";
+  guessButton.disabled = true;
+}
+
+// Create the stat grid for Stat Guess Mode
+function createStatGrid() {
+  const guessGrid = document.getElementById("guess-grid");
+
+  // Create headers for stats
+  const headerRow = document.createElement("div");
+  headerRow.className = "stat-row header-row";
+
+  const headers = ["Guess", "Color", "Rarity", "Attack", "Energy", "Speed"];
+  headers.forEach(header => {
+    const headerCell = document.createElement("div");
+    headerCell.className = "stat-cell stat-header";
+    headerCell.innerText = header;
+    headerRow.appendChild(headerCell);
+  });
+
+  guessGrid.appendChild(headerRow);
+
+  // Create empty rows for guesses
+  for (let i = 0; i < maxAttempts; i++) {
+    const row = document.createElement("div");
+    row.className = "stat-row";
+    row.id = `stat-row-${i}`;
+
+    for (let j = 0; j < headers.length; j++) {
+      const cell = document.createElement("div");
+      cell.className = "stat-cell";
+      cell.id = `cell-${i}-${j}`;
+      row.appendChild(cell);
+    }
+
+    guessGrid.appendChild(row);
+  }
+}
+
+// Update the stat display when in Stat Guess Mode
+function updateStatDisplay() {
+  if (!isStatGuessMode) return;
+
+  const answerStats = beeStats[answer];
+
+  // Don't show anything initially, stats will be revealed as player makes guesses
+}
+
+// Check a guess in Stat Guess Mode
+function checkStatGuess(guess) {
+  const guessLower = guess.toLowerCase();
+  const guessStats = beeStats[guessLower];
+  const answerStats = beeStats[answer];
+
+  const currentAttempt = maxAttempts - attempts;
+  const row = document.getElementById(`stat-row-${currentAttempt}`);
+  const cells = row.querySelectorAll(".stat-cell");
+
+  // Set the bee name in the first cell
+  cells[0].innerText = guessStats.name;
+
+  // Color
+  cells[1].innerText = guessStats.color;
+  if (guessStats.color === answerStats.color) {
+    cells[1].classList.add("correct");
+  } else {
+    cells[1].classList.add("absent");
+  }
+
+  // Rarity
+  cells[2].innerText = guessStats.rarity;
+  if (guessStats.rarity === answerStats.rarity) {
+    cells[2].classList.add("correct");
+  } else {
+    cells[2].classList.add("absent");
+  }
+
+  // Attack
+  cells[3].innerText = guessStats.attack;
+  if (guessStats.attack === answerStats.attack) {
+    cells[3].classList.add("correct");
+  } else {
+    if (guessStats.attack < answerStats.attack) {
+      cells[3].classList.add("present");
+      cells[3].innerHTML += ' <span class="arrow">↑</span>';
+    } else {
+      cells[3].classList.add("present");
+      cells[3].innerHTML += ' <span class="arrow">↓</span>';
+    }
+  }
+
+  // Energy
+  cells[4].innerText = guessStats.energy;
+  if (guessStats.energy === answerStats.energy) {
+    cells[4].classList.add("correct");
+  } else {
+    if (guessStats.energy < answerStats.energy) {
+      cells[4].classList.add("present");
+      cells[4].innerHTML += ' <span class="arrow">↑</span>';
+    } else {
+      cells[4].classList.add("present");
+      cells[4].innerHTML += ' <span class="arrow">↓</span>';
+    }
+  }
+
+  // Speed
+  cells[5].innerText = guessStats.speed;
+  if (guessStats.speed === answerStats.speed) {
+    cells[5].classList.add("correct");
+  } else {
+    if (guessStats.speed < answerStats.speed) {
+      cells[5].classList.add("present");
+      cells[5].innerHTML += ' <span class="arrow">↑</span>';
+    } else {
+      cells[5].classList.add("present");
+      cells[5].innerHTML += ' <span class="arrow">↓</span>';
+    }
+  }
+}
+
+// Original event listeners and functions
 document.getElementById("guess-input").addEventListener("input", () => {
   const guess = document.getElementById("guess-input").value.toLowerCase();
   const submitButton = document.getElementById("guess-button");
@@ -86,6 +247,7 @@ document.getElementById("reset-button").addEventListener("click", () => {
   }
 });
 
+// Updated to handle Stat Guess mode
 function submitGuess() {
   if (attempts <= 0 || document.getElementById("guess-button").disabled) {
     return;
@@ -97,13 +259,47 @@ function submitGuess() {
     return;
   }
 
-  attempts--; // Move this line here, before calling checkGuess
-  checkGuess(guess);
+  attempts--;
+
+  if (isStatGuessMode) {
+    // Handle stat guess mode
+    checkStatGuess(guess);
+    document.getElementById("remaining-attempts").innerText = `Attempts left before you're out of royal jelly: ${attempts}`;
+
+    // Check if the player won
+    if (guess === answer) {
+      setTimeout(() => {
+        soundEnabled && playSound("correct");
+        alert("Un-bee-lievable! You guessed the bee!");
+        const attemptsUsed = maxAttempts - attempts;
+        updateStats(true, attemptsUsed);
+        checkPerfectGame(attemptsUsed);
+        checkAchievements(true, attemptsUsed);
+        endGame(true);
+        showBeeImage();
+      }, 500);
+    } else if (attempts === 0) {
+      setTimeout(() => {
+        soundEnabled && playSound("incorrect");
+        alert(`Game Over! The bee was ${answer}. Better luck nectar time!`);
+        consecutiveWins = 0;
+        localStorage.setItem("consecutiveWins", consecutiveWins);
+        updateStats(false, maxAttempts);
+        checkAchievements(false, maxAttempts);
+        endGame(false);
+        showBeeImage();
+      }, 500);
+    }
+  } else {
+    // Handle original mode
+    checkGuess(guess);
+  }
+
   document.getElementById("guess-input").value = "";
   document.getElementById("guess-input").focus();
 }
 
-// Check the submitted guess against the answer
+// Original checkGuess function
 function checkGuess(guess) {
   const guessRow = document.createElement("div");
   guessRow.className = "guess-row";
@@ -139,7 +335,7 @@ function checkGuess(guess) {
   setTimeout(() => {
     if (guess === answer) {
       console.log("Correct guess!");
-      if (soundEnabled) playSound("correct");
+      soundEnabled && playSound("correct");
       alert("Un-bee-lievable! You guessed the bee!");
       const attemptsUsed = maxAttempts - attempts;
       console.log(`Attempts used: ${attemptsUsed}`);
@@ -149,9 +345,9 @@ function checkGuess(guess) {
       endGame(true);
       showBeeImage();
     } else if (attempts === 0) {
-      if (soundEnabled) playSound("incorrect");
+      soundEnabled && playSound("incorrect");
       alert(`Game Over! The bee was ${answer}. Better luck nectar time!`);
-      consecutiveWins = 0; // Reset consecutive wins on loss
+      consecutiveWins = 0;
       localStorage.setItem("consecutiveWins", consecutiveWins);
       updateStats(false, maxAttempts);
       checkAchievements(false, maxAttempts);

@@ -19,8 +19,8 @@
       </div>
       <ul id="navbar-menu">
         <li><a href="index.html">Beedle</a></li>
-        <li><a href="sticker-guess.html">Sticker Guess</a></li>
         <li><a href="bee-match.html" class="active">Memory Match</a></li>
+        <li><a href="sticker-guess.html">Sticker Guess (Alpha)</a></li>
       </ul>
       <div id="theme-toggle-container">
         <label class="toggle">
@@ -63,8 +63,8 @@
 
       <div class="footer-buttons">
         <button id="show-stats-button">Match Stats</button>
-        <a href="index.html" class="button back-to-beedle-button">Back to Beedle</a>
       </div>
+      <a href="index.html" class="button back-to-beedle-button">Back to Beedle</a>
     </div>
 
     <div id="modal" class="modal">
@@ -74,39 +74,6 @@
       </div>
     </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const themeToggle = document.getElementById("theme-toggle");
-
-        if (localStorage.getItem("darkMode") === "true") {
-          document.body.classList.add("dark-mode");
-          themeToggle.checked = true;
-        }
-
-        themeToggle.addEventListener("change", () => {
-          document.body.classList.toggle("dark-mode");
-          localStorage.setItem("darkMode", themeToggle.checked);
-        });
-
-        const navbarToggle = document.getElementById("navbar-toggle");
-        const navbar = document.querySelector(".navbar");
-
-        navbarToggle.addEventListener("click", () => {
-          navbar.classList.toggle("expanded");
-        });
-
-        const navLinks = document.querySelectorAll("#navbar-menu a");
-        const currentPage = window.location.pathname.split("/").pop() || "index.html";
-
-        navLinks.forEach(link => {
-          if (link.getAttribute("href") === currentPage) {
-            link.classList.add("active");
-          } else {
-            link.classList.remove("active");
-          }
-        });
-      });
-    </script>
     <script src="bee-match.js"></script>
   </body>
 </html>

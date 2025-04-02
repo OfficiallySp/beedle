@@ -12,6 +12,37 @@ document.addEventListener("DOMContentLoaded", () => {
   const modal = document.getElementById("modal");
   const modalText = document.getElementById("modal-text");
   const closeModal = document.querySelector(".close");
+  const themeToggle = document.getElementById("theme-toggle");
+  const navbarToggle = document.getElementById("navbar-toggle");
+  const navbar = document.querySelector(".navbar");
+
+  // Handle theme toggle
+  if (localStorage.getItem("darkMode") === "true") {
+    document.body.classList.add("dark-mode");
+    themeToggle.checked = true;
+  }
+
+  themeToggle.addEventListener("change", () => {
+    document.body.classList.toggle("dark-mode");
+    localStorage.setItem("darkMode", themeToggle.checked);
+  });
+
+  // Handle navbar toggle
+  navbarToggle.addEventListener("click", () => {
+    navbar.classList.toggle("expanded");
+  });
+
+  // Handle active navigation
+  const navLinks = document.querySelectorAll("#navbar-menu a");
+  const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+  navLinks.forEach(link => {
+    if (link.getAttribute("href") === currentPage) {
+      link.classList.add("active");
+    } else {
+      link.classList.remove("active");
+    }
+  });
 
   // Game state
   let cards = [];
@@ -166,8 +197,6 @@ document.addEventListener("DOMContentLoaded", () => {
       // Card back (showing when unflipped)
       const cardBack = document.createElement("div");
       cardBack.className = "card-face card-back";
-      cardBack.innerHTML = "🍯";
-
       // Card front (showing when flipped)
       const cardFront = document.createElement("div");
       cardFront.className = "card-face card-front";
@@ -277,11 +306,12 @@ document.addEventListener("DOMContentLoaded", () => {
     localStorage.setItem("soundEnabled", soundEnabled);
   }
 
-  // Play a sound if enabled
+  // Play sound if enabled
   function playSound(sound) {
-    if (soundEnabled) {
-      sound.currentTime = 0;
-      sound.play().catch(err => console.log("Audio play error:", err));
+    if (soundEnabled && sound) {
+      sound.play().catch(() => {
+        // Silent error handling for browsers that block autoplay
+      });
     }
   }
 
