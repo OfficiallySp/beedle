@@ -1,0 +1,434 @@
+/* Bee League Challenge Game Styles */
+
+#player-info {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+#player-info div {
+  flex: 1;
+  min-width: 150px;
+  margin: 5px;
+  font-weight: bold;
+  text-align: center;
+}
+
+#challenge-container {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+#challenge-description {
+  margin: 15px 0;
+  line-height: 1.5;
+  font-weight: bold;
+  color: var(--text-highlight);
+}
+
+#bee-puzzle {
+  margin: 20px 0;
+}
+
+.sortable-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 15px 0;
+  min-height: 80px;
+  padding: 10px;
+  background-color: rgba(255, 215, 0, 0.1);
+  border-radius: 5px;
+  border: 2px dashed #ffd700;
+}
+
+.droppable-area {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 15px 0;
+  min-height: 80px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  border: 2px dashed #ccc;
+}
+
+.bee-item {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: var(--primary-color);
+  border-radius: 5px;
+  cursor: grab;
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+}
+
+.bee-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.bee-item img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+}
+
+.bee-item span {
+  font-weight: bold;
+}
+
+/* Bee tooltip styles */
+.bee-tooltip {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--card-bg);
+  color: var(--text-color);
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  width: 200px;
+  z-index: 100;
+  font-size: 0.85em;
+  text-align: left;
+  pointer-events: none;
+  border: 1px solid var(--primary-color);
+}
+
+.bee-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -8px;
+  border-width: 8px;
+  border-style: solid;
+  border-color: var(--primary-color) transparent transparent transparent;
+}
+
+.bee-tooltip div {
+  margin: 3px 0;
+  line-height: 1.3;
+}
+
+/* Hint system */
+.hint-system {
+  margin: 20px 0;
+  text-align: center;
+}
+
+#use-hint {
+  padding: 8px 15px;
+  background-color: var(--secondary-color);
+  color: var(--button-text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#use-hint:hover {
+  background-color: var(--secondary-hover);
+}
+
+.hint-cost {
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+#hint-content {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  border-left: 4px solid var(--secondary-color);
+  text-align: left;
+  font-style: italic;
+}
+
+#challenge-result {
+  margin-top: 20px;
+  text-align: center;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+}
+
+#challenge-result h3 {
+  margin-bottom: 15px;
+  color: var(--text-highlight);
+}
+
+#result-message {
+  font-size: 1.2em;
+  margin-bottom: 15px;
+}
+
+#points-earned {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: #ffd700;
+  margin-bottom: 10px;
+}
+
+/* Streak bonus styles */
+#bonus-points {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  background-color: rgba(255, 215, 0, 0.1);
+  padding: 10px;
+  border-radius: 5px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { background-color: rgba(255, 215, 0, 0.1); }
+  50% { background-color: rgba(255, 215, 0, 0.3); }
+  100% { background-color: rgba(255, 215, 0, 0.1); }
+}
+
+.bonus-label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+#streak-bonus {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+#leaderboard-container {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+#leaderboard {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+#leaderboard th,
+#leaderboard td {
+  padding: 10px;
+  text-align: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#leaderboard th {
+  font-weight: bold;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+#leaderboard tbody tr:hover {
+  background-color: rgba(255, 215, 0, 0.1);
+}
+
+#league-info {
+  background-color: var(--card-bg);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.league-item {
+  display: flex;
+  align-items: center;
+  margin: 15px 0;
+}
+
+.league-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 15px;
+}
+
+.bronze {
+  background: linear-gradient(135deg, #cd7f32, #a05a2c);
+}
+
+.silver {
+  background: linear-gradient(135deg, #c0c0c0, #a0a0a0);
+}
+
+.gold {
+  background: linear-gradient(135deg, #ffd700, #e5c100);
+}
+
+.diamond {
+  background: linear-gradient(135deg, #b9f2ff, #8be7ff);
+}
+
+.master {
+  background: linear-gradient(135deg, #ff4e50, #fc913a);
+}
+
+.league-name {
+  font-weight: bold;
+  margin-right: 15px;
+  flex: 1;
+}
+
+.league-points {
+  color: #ffd700;
+  font-size: 0.9em;
+}
+
+#submit-solution, #next-challenge {
+  display: block;
+  width: 200px;
+  margin: 20px auto;
+  padding: 10px 15px;
+  background-color: var(--primary-color);
+  color: var(--button-text);
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#submit-solution:hover, #next-challenge:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+/* Stats modal */
+.stats-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.stats-item {
+  flex: 1 0 45%;
+  margin: 5px;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stats-label {
+  font-weight: bold;
+}
+
+.stats-value {
+  color: var(--text-highlight);
+}
+
+.history-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.history-list li {
+  padding: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+}
+
+.history-list li:last-child {
+  border-bottom: none;
+}
+
+.history-date {
+  font-size: 0.85em;
+  opacity: 0.8;
+  margin-right: 10px;
+  min-width: 90px;
+}
+
+#reset-stats-button {
+  display: block;
+  margin: 20px auto 0;
+  padding: 8px 15px;
+  background-color: var(--danger-color, #d9534f);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#reset-stats-button:hover {
+  background-color: var(--danger-hover, #c9302c);
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  #player-info {
+    flex-direction: column;
+  }
+
+  #player-info div {
+    margin: 5px 0;
+  }
+
+  .league-item {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .league-icon {
+    margin: 0 auto 10px;
+  }
+
+  .league-name, .league-points {
+    margin: 5px 0;
+  }
+
+  .bee-tooltip {
+    width: 150px;
+    font-size: 0.75em;
+    left: 0;
+    transform: none;
+  }
+
+  .bee-tooltip::after {
+    left: 20px;
+    margin-left: 0;
+  }
+
+  .stats-item {
+    flex: 1 0 100%;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.tab-content.active {
+  animation: fadeIn 0.5s;
+}
+
+.bee-item {
+  animation: fadeIn 0.3s;
+}

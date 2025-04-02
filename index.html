@@ -123,13 +123,23 @@
           localStorage.setItem("darkMode", themeToggle.checked);
         });
 
+        // Navigation toggle for mobile
         const navbarToggle = document.getElementById("navbar-toggle");
         const navbar = document.querySelector(".navbar");
 
-        navbarToggle.addEventListener("click", () => {
+        navbarToggle.addEventListener("click", (event) => {
+          event.stopPropagation();
           navbar.classList.toggle("expanded");
         });
 
+        // Close navbar when clicking outside
+        document.addEventListener("click", (event) => {
+          if (!navbar.contains(event.target) && !navbarToggle.contains(event.target) && navbar.classList.contains("expanded")) {
+            navbar.classList.remove("expanded");
+          }
+        });
+
+        // Set active navigation item
         const navLinks = document.querySelectorAll("#navbar-menu a");
         const currentPage = window.location.pathname.split("/").pop() || "index.html";
 
@@ -139,6 +149,13 @@
           } else {
             link.classList.remove("active");
           }
+
+          // Close mobile menu when a link is clicked
+          link.addEventListener("click", () => {
+            if (window.innerWidth <= 768) {
+              navbar.classList.remove("expanded");
+            }
+          });
         });
       });
     </script>

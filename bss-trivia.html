@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>BSS Trivia - Bee Swarm Simulator Knowledge Quiz</title>
+    <meta name="description" content="Play BSS Trivia, a fun quiz game to test your knowledge of Bee Swarm Simulator. Answer questions about bees, fields, items, and more!" />
+    <meta name="keywords" content="BSS Trivia, Bee Swarm Simulator, quiz game, knowledge test, bee game" />
+    <meta name="author" content="Shane (OfficiallySp)" />
+    <meta property="og:title" content="BSS Trivia - Bee Swarm Simulator Knowledge Quiz" />
+    <meta property="og:description" content="Play BSS Trivia, a fun quiz game to test your knowledge of Bee Swarm Simulator. Answer questions about bees, fields, items, and more!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://officiallysp.github.io/Beedle/bss-trivia.html" />
+    <meta property="og:image" content="day.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://officiallysp.github.io/Beedle/bss-trivia.html" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="bss-trivia.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-toggle" id="navbar-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <ul id="navbar-menu">
+        <li><a href="index.html">Beedle</a></li>
+        <li><a href="bee-match.html">Memory Match</a></li>
+        <li><a href="sticker-guess.html">Sticker Guess (Alpha)</a></li>
+        <li><a href="bee-league.html">Bee League</a></li>
+        <li><a href="field-puzzle.html">Field Puzzle</a></li>
+        <li><a href="quest-adventure.html">Quest Adventure</a></li>
+        <li><a href="bss-trivia.html" class="active">BSS Trivia</a></li>
+      </ul>
+      <div id="theme-toggle-container">
+        <label class="toggle">
+          <input type="checkbox" id="theme-toggle" />
+          <span class="slider round"></span>
+          <span class="toggle-label">Night Bell</span>
+        </label>
+      </div>
+    </nav>
+
+    <div class="game-container">
+      <h1>BSS Trivia</h1>
+      <h5>Test your Bee Swarm Simulator knowledge</h5>
+
+      <div id="game-info">
+        <div class="info-box">
+          <span class="info-label">Score:</span>
+          <span id="score" class="info-value">0</span>
+        </div>
+        <div class="info-box">
+          <span class="info-label">Question:</span>
+          <span id="question-number" class="info-value">0/0</span>
+        </div>
+        <div class="info-box">
+          <span class="info-label">Time:</span>
+          <span id="timer" class="info-value">00:00</span>
+        </div>
+      </div>
+
+      <div id="game-modes" class="game-section">
+        <h2>Select Game Mode</h2>
+        <div id="mode-options">
+          <div class="mode-option" data-mode="timed">
+            <div class="mode-icon timed"></div>
+            <div class="mode-details">
+              <h3>Timed Mode</h3>
+              <p>Answer as many questions as you can in 2 minutes</p>
+            </div>
+          </div>
+          <div class="mode-option" data-mode="endless">
+            <div class="mode-icon endless"></div>
+            <div class="mode-details">
+              <h3>Endless Mode</h3>
+              <p>Keep answering questions until you get one wrong</p>
+            </div>
+          </div>
+          <div class="mode-option" data-mode="challenge">
+            <div class="mode-icon challenge"></div>
+            <div class="mode-details">
+              <h3>Challenge Mode</h3>
+              <p>Answer 20 increasingly difficult questions</p>
+            </div>
+          </div>
+        </div>
+        <div id="category-selector">
+          <h3>Select Categories</h3>
+          <div id="categories">
+            <label class="category-option">
+              <input type="checkbox" value="bees" checked /> Bees
+            </label>
+            <label class="category-option">
+              <input type="checkbox" value="fields" checked /> Fields
+            </label>
+            <label class="category-option">
+              <input type="checkbox" value="items" checked /> Items
+            </label>
+            <label class="category-option">
+              <input type="checkbox" value="mechanics" checked /> Game Mechanics
+            </label>
+            <label class="category-option">
+              <input type="checkbox" value="bears" checked /> Bears & Quests
+            </label>
+          </div>
+        </div>
+        <button id="start-game">Start Game</button>
+      </div>
+
+      <div id="game-content" class="game-section hidden">
+        <div id="question-container">
+          <div id="difficulty-indicator">
+            <span id="difficulty-label">Difficulty: </span>
+            <span id="difficulty-value">Easy</span>
+          </div>
+          <div id="category-indicator">
+            <span id="category-label">Category: </span>
+            <span id="category-value">Bees</span>
+          </div>
+          <p id="question-text">Which bee produces the most honey in Bee Swarm Simulator?</p>
+          <div id="question-image-container" class="hidden">
+            <img id="question-image" src="" alt="Question image" />
+          </div>
+        </div>
+
+        <div id="answers-container">
+          <div class="answer-option" data-index="0">
+            <span class="answer-letter">A</span>
+            <span class="answer-text">Basic Bee</span>
+          </div>
+          <div class="answer-option" data-index="1">
+            <span class="answer-letter">B</span>
+            <span class="answer-text">Honey Bee</span>
+          </div>
+          <div class="answer-option" data-index="2">
+            <span class="answer-letter">C</span>
+            <span class="answer-text">Exhausted Bee</span>
+          </div>
+          <div class="answer-option" data-index="3">
+            <span class="answer-letter">D</span>
+            <span class="answer-text">Gifted Honey Bee</span>
+          </div>
+        </div>
+
+        <button id="hint-button" class="hidden">Need a Hint?</button>
+
+        <div id="feedback-message" class="hidden">
+          <span id="feedback-text">Correct!</span>
+          <div id="feedback-details"></div>
+        </div>
+
+        <button id="next-question" class="hidden">Next Question</button>
+      </div>
+
+      <div id="game-results" class="game-section hidden">
+        <h2>Game Over!</h2>
+        <div id="results-details">
+          <div class="result-item">
+            <span class="result-label">Final Score:</span>
+            <span id="final-score" class="result-value">0</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Correct Answers:</span>
+            <span id="correct-answers" class="result-value">0</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Questions Answered:</span>
+            <span id="total-questions" class="result-value">0</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Accuracy:</span>
+            <span id="accuracy" class="result-value">0%</span>
+          </div>
+          <div class="result-item">
+            <span class="result-label">Time Played:</span>
+            <span id="time-played" class="result-value">00:00</span>
+          </div>
+        </div>
+        <div id="high-score-message" class="hidden">
+          <span>New High Score!</span>
+        </div>
+        <div id="results-buttons">
+          <button id="play-again">Play Again</button>
+          <button id="change-mode">Change Mode</button>
+        </div>
+      </div>
+
+      <div id="toggle-container">
+        <label class="toggle">
+          <input type="checkbox" id="sound-toggle" checked />
+          <span class="slider round"></span>
+          <span class="toggle-label">Sound</span>
+        </label>
+      </div>
+
+      <div class="footer-buttons">
+        <button id="show-stats-button">Trivia Stats</button>
+        <button id="show-achievements-button">Achievements</button>
+        <a href="index.html" class="button back-to-beedle-button">Back to Beedle</a>
+      </div>
+    </div>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="modal-text"></div>
+      </div>
+    </div>
+
+    <script src="bss-trivia.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Theme toggle functionality
+        const themeToggle = document.getElementById("theme-toggle");
+
+        if (localStorage.getItem("darkMode") === "true") {
+          document.body.classList.add("dark-mode");
+          themeToggle.checked = true;
+        }
+
+        themeToggle.addEventListener("change", () => {
+          document.body.classList.toggle("dark-mode");
+          localStorage.setItem("darkMode", themeToggle.checked);
+        });
+
+        // Navigation toggle for mobile
+        const navbarToggle = document.getElementById("navbar-toggle");
+        const navbar = document.querySelector(".navbar");
+
+        navbarToggle.addEventListener("click", () => {
+          navbar.classList.toggle("expanded");
+        });
+
+        // Set active navigation item
+        const navLinks = document.querySelectorAll("#navbar-menu a");
+        const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+        navLinks.forEach(link => {
+          if (link.getAttribute("href") === currentPage) {
+            link.classList.add("active");
+          } else {
+            link.classList.remove("active");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

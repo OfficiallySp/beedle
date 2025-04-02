@@ -1,0 +1,615 @@
+/* Quest Adventure Game Styles */
+
+#player-stats {
+  display: flex;
+  justify-content: space-around;
+  background-color: var(--card-bg);
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.stat-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 0.9em;
+  opacity: 0.8;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+#game-content {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+#bears-container {
+  flex: 1;
+  min-width: 200px;
+  background-color: var(--card-bg);
+  padding: 15px;
+  border-radius: 10px;
+}
+
+#bears-container h3 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+#bears-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bear-option {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.bear-option:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.bear-option.active {
+  background-color: var(--primary-color);
+}
+
+.bear-option img {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  border-radius: 50%;
+}
+
+#quest-container {
+  flex: 2;
+  min-width: 300px;
+  background-color: var(--card-bg);
+  padding: 15px;
+  border-radius: 10px;
+}
+
+#quest-dialog {
+  display: flex;
+  align-items: flex-start;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+#bear-avatar {
+  margin-right: 15px;
+}
+
+#dialog-bear-img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  border: 3px solid var(--primary-color);
+}
+
+#dialog-content {
+  flex: 1;
+}
+
+#bear-name {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+#quest-text {
+  line-height: 1.5;
+}
+
+#available-quests h3, #active-quest h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#quest-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.quest-item {
+  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.quest-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.quest-title {
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-bottom: 5px;
+  color: var(--primary-color);
+}
+
+.quest-desc {
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+.quest-difficulty {
+  font-size: 0.8em;
+  margin-top: 5px;
+}
+
+.difficulty-easy {
+  color: #4CAF50;
+}
+
+.difficulty-medium {
+  color: #FFC107;
+}
+
+.difficulty-hard {
+  color: #F44336;
+}
+
+#active-quest-details {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 15px;
+}
+
+#active-quest-title {
+  margin-top: 0;
+  margin-bottom: 10px;
+  color: var(--primary-color);
+}
+
+#active-quest-description {
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+#quest-objectives {
+  margin-bottom: 20px;
+}
+
+#quest-objectives h4 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+#objectives-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+#objectives-list li {
+  margin-bottom: 8px;
+  padding-left: 20px;
+  position: relative;
+}
+
+#objectives-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--primary-color);
+}
+
+.objective-incomplete {
+  opacity: 0.8;
+}
+
+.objective-complete {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+#quest-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+#quest-actions button {
+  padding: 10px 15px;
+  background-color: var(--primary-color);
+  color: var(--button-text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#quest-actions button:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+#quest-actions button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  transform: none;
+}
+
+#complete-quest {
+  background-color: #4CAF50 !important;
+}
+
+#complete-quest:hover {
+  background-color: #45a049 !important;
+}
+
+#abandon-quest {
+  background-color: var(--danger-color) !important;
+}
+
+#abandon-quest:hover {
+  background-color: var(--danger-hover) !important;
+}
+
+#inventory-container {
+  flex: 1;
+  min-width: 200px;
+  background-color: var(--card-bg);
+  padding: 15px;
+  border-radius: 10px;
+}
+
+#inventory-container h3, #inventory-container h4 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+#inventory-slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.inventory-slot {
+  height: 50px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.inventory-slot.filled {
+  background-color: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.inventory-slot img {
+  max-width: 80%;
+  max-height: 80%;
+}
+
+#equipment {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.equipment-slot {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.equipment-slot:last-child {
+  border-bottom: none;
+}
+
+.slot-name {
+  opacity: 0.8;
+}
+
+.equipped-item {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Reward Modal */
+#reward-content {
+  text-align: center;
+}
+
+#reward-details {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
+  padding: 20px;
+  margin: 20px 0;
+}
+
+#completion-message {
+  font-size: 1.1em;
+  margin-bottom: 20px;
+}
+
+#rewards {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.reward-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 15px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border-radius: 5px;
+}
+
+.reward-value {
+  font-weight: bold;
+  color: #4CAF50;
+}
+
+.reward-item.special {
+  background-color: rgba(255, 215, 0, 0.1);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+#claim-rewards {
+  padding: 12px 25px;
+  background-color: var(--primary-color);
+  color: var(--button-text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#claim-rewards:hover {
+  background-color: var(--primary-hover);
+  transform: translateY(-2px);
+}
+
+.hidden {
+  display: none;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  #player-stats {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .stat-container {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  #game-content {
+    flex-direction: column;
+  }
+
+  #quest-dialog {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  #bear-avatar {
+    margin-right: 0;
+    margin-bottom: 15px;
+  }
+
+  #quest-actions {
+    flex-direction: column;
+  }
+}
+
+/* Energy System Styles */
+#energy-container {
+  display: flex;
+  align-items: center;
+  background-color: var(--card-bg);
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.energy-label {
+  margin-right: 10px;
+  font-weight: bold;
+}
+
+.energy-bar-container {
+  flex: 1;
+  height: 15px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-right: 10px;
+}
+
+.energy-bar {
+  height: 100%;
+  width: 100%;
+  background-color: #4CAF50;
+  border-radius: 10px;
+  transition: width 0.3s, background-color 0.3s;
+}
+
+#energy-amount {
+  margin-right: 15px;
+  font-size: 0.9em;
+}
+
+.energy-button {
+  padding: 5px 15px;
+  background-color: var(--primary-color);
+  color: var(--button-text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.energy-button:hover {
+  background-color: var(--primary-hover);
+}
+
+/* XP Level Styles */
+.level-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.xp-bar-container {
+  width: 50px;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-left: 10px;
+}
+
+.xp-bar {
+  height: 100%;
+  width: 0%;
+  background-color: #FFC107;
+  border-radius: 3px;
+  transition: width 0.3s;
+}
+
+/* Field Selection Styles */
+#field-section {
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#field-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.field-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.field-option img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 5px;
+  margin-bottom: 5px;
+}
+
+.field-option span {
+  font-size: 0.8em;
+  text-align: center;
+}
+
+.field-option:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.field-option.active {
+  background-color: rgba(var(--primary-rgb), 0.2);
+  border: 1px solid var(--primary-color);
+}
+
+#current-field-container {
+  text-align: center;
+  font-size: 0.9em;
+}
+
+.field-label {
+  opacity: 0.7;
+  margin-right: 5px;
+}
+
+#current-field {
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+/* Quest Cooldown Styles */
+.quest-item.on-cooldown {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.quest-cooldown {
+  font-size: 0.8em;
+  color: #F44336;
+  margin-top: 5px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  #energy-container {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .energy-label {
+    margin-right: 0;
+    margin-bottom: 5px;
+  }
+
+  .energy-bar-container {
+    margin-right: 0;
+    margin-bottom: 5px;
+  }
+
+  #energy-amount {
+    margin-right: 0;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+
+  #field-selector {
+    grid-template-columns: 1fr;
+  }
+}

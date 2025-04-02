@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Quest Adventure - Bee Swarm Simulator Quest Game</title>
+    <meta name="description" content="Play Quest Adventure, a fun quest simulation game based on Bee Swarm Simulator. Complete quests from your favorite bears!" />
+    <meta name="keywords" content="Quest Adventure, Bee Swarm Simulator, quests, bear quests, mission game" />
+    <meta name="author" content="Shane (OfficiallySp)" />
+    <meta property="og:title" content="Quest Adventure - Bee Swarm Simulator Quest Game" />
+    <meta property="og:description" content="Play Quest Adventure, a fun quest simulation game based on Bee Swarm Simulator. Complete quests from your favorite bears!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://officiallysp.github.io/Beedle/quest-adventure.html" />
+    <meta property="og:image" content="day.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://officiallysp.github.io/Beedle/quest-adventure.html" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="quest-adventure.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-toggle" id="navbar-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <ul id="navbar-menu">
+        <li><a href="index.html">Beedle</a></li>
+        <li><a href="bee-match.html">Memory Match</a></li>
+        <li><a href="sticker-guess.html">Sticker Guess (Alpha)</a></li>
+        <li><a href="bee-league.html">Bee League</a></li>
+        <li><a href="field-puzzle.html">Field Puzzle</a></li>
+        <li><a href="quest-adventure.html" class="active">Quest Adventure</a></li>
+        <li><a href="bss-trivia.html">BSS Trivia</a></li>
+      </ul>
+      <div id="theme-toggle-container">
+        <label class="toggle">
+          <input type="checkbox" id="theme-toggle" />
+          <span class="slider round"></span>
+          <span class="toggle-label">Night Bell</span>
+        </label>
+      </div>
+    </nav>
+
+    <div class="game-container">
+      <h1>Quest Adventure</h1>
+      <h5>Complete quests from your favorite bears</h5>
+
+      <div id="player-stats">
+        <div class="stat-container">
+          <span class="stat-label">Honey:</span>
+          <span id="honey-amount" class="stat-value">0</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">Pollen:</span>
+          <span id="pollen-amount" class="stat-value">0</span>
+        </div>
+        <div class="stat-container">
+          <span class="stat-label">Quests Completed:</span>
+          <span id="completed-quests" class="stat-value">0</span>
+        </div>
+        <div class="stat-container level-container">
+          <span class="stat-label">Level:</span>
+          <span id="xp-level" class="stat-value">1</span>
+          <div class="xp-bar-container">
+            <div id="xp-progress" class="xp-bar"></div>
+          </div>
+        </div>
+      </div>
+
+      <div id="energy-container">
+        <div class="energy-label">Energy:</div>
+        <div class="energy-bar-container">
+          <div id="energy-bar" class="energy-bar"></div>
+        </div>
+        <div id="energy-amount">100/100</div>
+        <button id="rest-energy" class="energy-button">Rest</button>
+      </div>
+
+      <div id="game-content">
+        <div id="bears-container">
+          <h3>Choose a Quest Giver</h3>
+          <div id="bears-list">
+            <div class="bear-option active" data-bear="black">
+              <img src="bee/black_bear.png" alt="Black Bear" />
+              <span>Black Bear</span>
+            </div>
+            <div class="bear-option" data-bear="brown">
+              <img src="bee/brown_bear.png" alt="Brown Bear" />
+              <span>Brown Bear</span>
+            </div>
+            <div class="bear-option" data-bear="polar">
+              <img src="bee/polar_bear.png" alt="Polar Bear" />
+              <span>Polar Bear</span>
+            </div>
+            <div class="bear-option" data-bear="panda">
+              <img src="bee/panda_bear.png" alt="Panda Bear" />
+              <span>Panda Bear</span>
+            </div>
+          </div>
+
+          <div id="field-section">
+            <h3>Choose a Field</h3>
+            <div id="field-selector">
+              <!-- Fields will be populated here -->
+            </div>
+            <div id="current-field-container">
+              <span class="field-label">Current Field:</span>
+              <span id="current-field">Dandelion Field</span>
+            </div>
+          </div>
+        </div>
+
+        <div id="quest-container">
+          <div id="quest-dialog">
+            <div id="bear-avatar">
+              <img id="dialog-bear-img" src="bee/black_bear.png" alt="Black Bear" />
+            </div>
+            <div id="dialog-content">
+              <h3 id="bear-name">Black Bear</h3>
+              <p id="quest-text">Welcome to Quest Adventure! Select a quest below to begin.</p>
+            </div>
+          </div>
+
+          <div id="available-quests">
+            <h3>Available Quests</h3>
+            <div id="quest-list">
+              <!-- Quests will be populated here -->
+            </div>
+          </div>
+
+          <div id="active-quest" class="hidden">
+            <h3>Current Quest</h3>
+            <div id="active-quest-details">
+              <h4 id="active-quest-title">Quest Title</h4>
+              <p id="active-quest-description">Quest description goes here.</p>
+
+              <div id="quest-objectives">
+                <h4>Objectives:</h4>
+                <ul id="objectives-list">
+                  <!-- Objectives will be populated here -->
+                </ul>
+              </div>
+
+              <div id="quest-actions">
+                <button id="collect-pollen">Collect Pollen</button>
+                <button id="convert-honey">Convert to Honey</button>
+                <button id="complete-quest" disabled>Complete Quest</button>
+                <button id="abandon-quest">Abandon Quest</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="inventory-container">
+          <h3>Your Inventory</h3>
+          <div id="inventory-slots">
+            <!-- Inventory slots will be populated here -->
+          </div>
+          <div id="equipment">
+            <h4>Equipment</h4>
+            <div class="equipment-slot" data-type="collector">
+              <span class="slot-name">Pollen Collector</span>
+              <span id="collector-name" class="equipped-item">Scooper</span>
+            </div>
+            <div class="equipment-slot" data-type="bag">
+              <span class="slot-name">Pollen Bag</span>
+              <span id="bag-name" class="equipped-item">Default Bag</span>
+            </div>
+            <div class="equipment-slot" data-type="boots">
+              <span class="slot-name">Boots</span>
+              <span id="boots-name" class="equipped-item">Beekeeper's Boots</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="toggle-container">
+        <label class="toggle">
+          <input type="checkbox" id="sound-toggle" checked />
+          <span class="slider round"></span>
+          <span class="toggle-label">Sound</span>
+        </label>
+      </div>
+
+      <div class="footer-buttons">
+        <button id="show-stats-button">Quest Stats</button>
+        <a href="index.html" class="button back-to-beedle-button">Back to Beedle</a>
+      </div>
+    </div>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="modal-text"></div>
+      </div>
+    </div>
+
+    <div id="reward-modal" class="modal">
+      <div class="modal-content">
+        <span class="close reward-close">&times;</span>
+        <div id="reward-content">
+          <h2>Quest Complete!</h2>
+          <div id="reward-details">
+            <p id="completion-message">You've successfully completed the quest!</p>
+            <div id="rewards">
+              <div class="reward-item">
+                <span class="reward-label">Honey:</span>
+                <span id="reward-honey" class="reward-value">+100</span>
+              </div>
+              <div class="reward-item">
+                <span class="reward-label">Experience:</span>
+                <span id="reward-xp" class="reward-value">+50</span>
+              </div>
+              <div id="special-reward" class="reward-item special">
+                <span class="reward-label">Special:</span>
+                <span id="reward-special" class="reward-value">New Equipment!</span>
+              </div>
+            </div>
+          </div>
+          <button id="claim-rewards">Claim Rewards</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="quest-adventure.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Theme toggle functionality
+        const themeToggle = document.getElementById("theme-toggle");
+
+        if (localStorage.getItem("darkMode") === "true") {
+          document.body.classList.add("dark-mode");
+          themeToggle.checked = true;
+        }
+
+        themeToggle.addEventListener("change", () => {
+          document.body.classList.toggle("dark-mode");
+          localStorage.setItem("darkMode", themeToggle.checked);
+        });
+
+        // Navigation toggle for mobile
+        const navbarToggle = document.getElementById("navbar-toggle");
+        const navbar = document.querySelector(".navbar");
+
+        navbarToggle.addEventListener("click", () => {
+          navbar.classList.toggle("expanded");
+        });
+
+        // Set active navigation item
+        const navLinks = document.querySelectorAll("#navbar-menu a");
+        const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+        navLinks.forEach(link => {
+          if (link.getAttribute("href") === currentPage) {
+            link.classList.add("active");
+          } else {
+            link.classList.remove("active");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

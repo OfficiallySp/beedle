@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Field Puzzle - Bee Swarm Simulator Field Matching Game</title>
+    <meta name="description" content="Play Field Puzzle, a matching game based on Bee Swarm Simulator. Match different field types with the most appropriate bees!" />
+    <meta name="keywords" content="Field Puzzle, Bee Swarm Simulator, field matching, bee game, matching game" />
+    <meta name="author" content="Shane (OfficiallySp)" />
+    <meta property="og:title" content="Field Puzzle - Bee Swarm Simulator Field Matching Game" />
+    <meta property="og:description" content="Play Field Puzzle, a matching game based on Bee Swarm Simulator. Match different field types with the most appropriate bees!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://officiallysp.github.io/Beedle/field-puzzle.html" />
+    <meta property="og:image" content="day.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://officiallysp.github.io/Beedle/field-puzzle.html" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="field-puzzle.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-toggle" id="navbar-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <ul id="navbar-menu">
+        <li><a href="index.html">Beedle</a></li>
+        <li><a href="bee-match.html">Memory Match</a></li>
+        <li><a href="sticker-guess.html">Sticker Guess (Alpha)</a></li>
+        <li><a href="bee-league.html">Bee League</a></li>
+        <li><a href="field-puzzle.html" class="active">Field Puzzle</a></li>
+        <li><a href="quest-adventure.html">Quest Adventure</a></li>
+        <li><a href="bss-trivia.html">BSS Trivia</a></li>
+      </ul>
+      <div id="theme-toggle-container">
+        <label class="toggle">
+          <input type="checkbox" id="theme-toggle" />
+          <span class="slider round"></span>
+          <span class="toggle-label">Night Bell</span>
+        </label>
+      </div>
+    </nav>
+
+    <div class="game-container">
+      <h1>Field Puzzle</h1>
+      <h5>Match field types with the appropriate bees</h5>
+
+      <div id="game-info">
+        <div id="score">Score: <span id="points">0</span></div>
+        <div id="timer">Time: <span id="time-remaining">60</span>s</div>
+        <div id="level">Level: <span id="current-level">1</span></div>
+        <div id="streak">Streak: <span id="current-streak">0</span></div>
+      </div>
+
+      <div id="fields-container">
+        <h3>Fields</h3>
+        <div id="fields-grid">
+          <!-- Fields will be populated here -->
+        </div>
+      </div>
+
+      <div id="bees-container">
+        <h3>Available Bees</h3>
+        <div id="bees-grid">
+          <!-- Bees will be populated here -->
+        </div>
+      </div>
+
+      <div id="assigned-container">
+        <h3>Your Assignments</h3>
+        <div id="assignments">
+          <!-- Assignments will appear here -->
+        </div>
+      </div>
+
+      <div id="result-container" class="hidden">
+        <h3>Results</h3>
+        <div id="result-message"></div>
+        <div id="result-score"></div>
+        <button id="next-level">Next Level</button>
+      </div>
+
+      <div class="game-controls">
+        <button id="submit-assignments">Submit Assignments</button>
+        <button id="reset-assignments">Reset Assignments</button>
+        <button id="show-tutorial">How to Play</button>
+      </div>
+
+      <div id="toggle-container">
+        <label class="toggle">
+          <input type="checkbox" id="sound-toggle" checked />
+          <span class="slider round"></span>
+          <span class="toggle-label">Sound</span>
+        </label>
+      </div>
+
+      <div class="footer-buttons">
+        <button id="show-stats-button">Field Stats</button>
+        <button id="show-combos-button">View Combos</button>
+        <a href="index.html" class="button back-to-beedle-button">Back to Beedle</a>
+      </div>
+    </div>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="modal-text"></div>
+      </div>
+    </div>
+
+    <div id="field-info-modal" class="modal">
+      <div class="modal-content field-info">
+        <span class="close field-close">&times;</span>
+        <div id="field-info-content">
+          <h3 id="field-name"></h3>
+          <img id="field-image" src="" alt="" />
+          <p id="field-description"></p>
+          <div id="field-ideal-bees">
+            <h4>Ideal Bee Types:</h4>
+            <ul id="ideal-bees-list"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="field-puzzle.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Theme toggle functionality
+        const themeToggle = document.getElementById("theme-toggle");
+
+        if (localStorage.getItem("darkMode") === "true") {
+          document.body.classList.add("dark-mode");
+          themeToggle.checked = true;
+        }
+
+        themeToggle.addEventListener("change", () => {
+          document.body.classList.toggle("dark-mode");
+          localStorage.setItem("darkMode", themeToggle.checked);
+        });
+
+        // Navigation toggle for mobile
+        const navbarToggle = document.getElementById("navbar-toggle");
+        const navbar = document.querySelector(".navbar");
+
+        navbarToggle.addEventListener("click", () => {
+          navbar.classList.toggle("expanded");
+        });
+
+        // Set active navigation item
+        const navLinks = document.querySelectorAll("#navbar-menu a");
+        const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+        navLinks.forEach(link => {
+          if (link.getAttribute("href") === currentPage) {
+            link.classList.add("active");
+          } else {
+            link.classList.remove("active");
+          }
+        });
+
+        // Tutorial button
+        const showTutorialButton = document.getElementById("show-tutorial");
+        const modal = document.getElementById("modal");
+        const modalText = document.getElementById("modal-text");
+
+        showTutorialButton.addEventListener("click", () => {
+          modalText.innerHTML = `
+            <h2>How to Play Field Puzzle</h2>
+            <div class="tutorial-section">
+              <h3>Game Objective</h3>
+              <p>Match bees to the most appropriate fields to earn maximum points. Progress through levels by making strategic assignments.</p>
+            </div>
+
+            <div class="tutorial-section">
+              <h3>Bee Assignment</h3>
+              <p>Drag a bee or tap/click it to assign to a field. Each bee works best in certain fields:</p>
+              <ul>
+                <li>Perfect match (listed in field info): +10 points</li>
+                <li>Color match: +5 points</li>
+                <li>Any assignment: +2 points</li>
+              </ul>
+            </div>
+
+            <div class="tutorial-section">
+              <h3>Bee Combos</h3>
+              <p>Create special combinations of bees in the same field to earn bonus points:</p>
+              <ul>
+                <li>Attack Squad: Two attack-focused bees</li>
+                <li>Bomb Squad: Two bomb-producing bees</li>
+                <li>Royal Collection: Two legendary bees</li>
+                <li>Color Harmony: Three bees of the same color</li>
+                <li>Balanced Team: Three different bee types</li>
+              </ul>
+            </div>
+
+            <div class="tutorial-section">
+              <h3>Bonuses</h3>
+              <ul>
+                <li>Perfect Assignments: +20 points each</li>
+                <li>Streaks: Consecutive perfect levels</li>
+                <li>Time Bonus: Points for each second remaining</li>
+                <li>Difficulty Multiplier: Harder fields give higher scores</li>
+              </ul>
+            </div>
+          `;
+          modal.style.display = "block";
+        });
+
+        // Show combos button
+        const showCombosButton = document.getElementById("show-combos-button");
+
+        showCombosButton.addEventListener("click", () => {
+          modalText.innerHTML = `
+            <h2>Bee Combo Guide</h2>
+            <div class="combos-list">
+              <div class="combo-item">
+                <h3>Attack Squad</h3>
+                <p>Two attack-focused bees working together</p>
+                <p class="combo-bonus">+15 points</p>
+                <p class="combo-tip">Try with: Brave Bee, Vicious Bee</p>
+              </div>
+
+              <div class="combo-item">
+                <h3>Bomb Squad</h3>
+                <p>Two bomb-producing bees create explosive synergy</p>
+                <p class="combo-bonus">+15 points</p>
+                <p class="combo-tip">Try with: Shocked Bee, Demo Bee</p>
+              </div>
+
+              <div class="combo-item">
+                <h3>Royal Collection</h3>
+                <p>Two legendary bees working together</p>
+                <p class="combo-bonus">+20 points</p>
+                <p class="combo-tip">Try with: Fuzzy Bee, Vicious Bee, Vector Bee</p>
+              </div>
+
+              <div class="combo-item">
+                <h3>Color Harmony</h3>
+                <p>Three bees of the same color creating harmony</p>
+                <p class="combo-bonus">+25 points</p>
+                <p class="combo-tip">Try with: Three bees of the same color</p>
+              </div>
+
+              <div class="combo-item">
+                <h3>Balanced Team</h3>
+                <p>A diverse team with at least three different bee types</p>
+                <p class="combo-bonus">+20 points</p>
+                <p class="combo-tip">Try with: Common, Rare, Epic, or Legendary variety</p>
+              </div>
+            </div>
+
+            <p class="combo-note">Note: Multiple combos can be active on the same field!</p>
+          `;
+          modal.style.display = "block";
+        });
+      });
+    </script>
+  </body>
+</html>

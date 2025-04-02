@@ -753,14 +753,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const navbarToggle = document.getElementById('navbar-toggle');
     const navbar = document.querySelector('.navbar');
 
-    navbarToggle.addEventListener('click', function() {
+    navbarToggle.addEventListener('click', function(event) {
+        event.stopPropagation(); // Prevent the click from bubbling up
         navbar.classList.toggle('expanded');
     });
 
     // Close navbar when clicking outside
     document.addEventListener('click', function(event) {
-        const isClickInside = navbar.contains(event.target) || navbarToggle.contains(event.target);
-        if (!isClickInside && navbar.classList.contains('expanded')) {
+        const isClickInsideNavbar = navbar.contains(event.target);
+        const isClickOnToggle = navbarToggle.contains(event.target);
+
+        if (!isClickInsideNavbar && !isClickOnToggle && navbar.classList.contains('expanded')) {
             navbar.classList.remove('expanded');
         }
     });
@@ -773,6 +776,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 navbar.classList.remove('expanded');
             }
         });
+    });
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 600) {
+            navbar.classList.remove('expanded');
+        }
     });
 });
 

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Bee League Challenge - Bee Swarm Simulator League Game</title>
+    <meta name="description" content="Play Bee League Challenge, a competitive game based on Bee Swarm Simulator. Complete challenges to climb the leaderboard!" />
+    <meta name="keywords" content="Bee League, Bee Swarm Simulator, competition, leaderboard, challenge game" />
+    <meta name="author" content="Shane (OfficiallySp)" />
+    <meta property="og:title" content="Bee League Challenge - Bee Swarm Simulator League Game" />
+    <meta property="og:description" content="Play Bee League Challenge, a competitive game based on Bee Swarm Simulator. Complete challenges to climb the leaderboard!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://officiallysp.github.io/Beedle/bee-league.html" />
+    <meta property="og:image" content="day.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="canonical" href="https://officiallysp.github.io/Beedle/bee-league.html" />
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="bee-league.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-toggle" id="navbar-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <ul id="navbar-menu">
+        <li><a href="index.html">Beedle</a></li>
+        <li><a href="bee-match.html">Memory Match</a></li>
+        <li><a href="sticker-guess.html">Sticker Guess (Alpha)</a></li>
+        <li><a href="bee-league.html" class="active">Bee League</a></li>
+        <li><a href="field-puzzle.html">Field Puzzle</a></li>
+        <li><a href="quest-adventure.html">Quest Adventure</a></li>
+        <li><a href="bss-trivia.html">BSS Trivia</a></li>
+      </ul>
+      <div id="theme-toggle-container">
+        <label class="toggle">
+          <input type="checkbox" id="theme-toggle" />
+          <span class="slider round"></span>
+          <span class="toggle-label">Night Bell</span>
+        </label>
+      </div>
+    </nav>
+
+    <div class="game-container">
+      <h1>Bee League Challenge</h1>
+      <h5>Complete challenges to climb the leaderboard!</h5>
+
+      <div class="league-tabs">
+        <button class="tab-btn active" data-tab="daily">Daily Challenge</button>
+        <button class="tab-btn" data-tab="weekly">Weekly Tournament</button>
+        <button class="tab-btn" data-tab="season">Season Progress</button>
+      </div>
+
+      <div id="player-info">
+        <div id="player-name">Player: Guest</div>
+        <div id="player-league">League: Bronze</div>
+        <div id="player-points">Points: 0</div>
+        <div id="player-streak">Streak: 0 days</div>
+      </div>
+
+      <div id="challenge-container">
+        <div class="tab-content active" id="daily-content">
+          <h3>Today's Challenge</h3>
+          <div class="challenge-timer">Time remaining: <span id="challenge-countdown">23:59:59</span></div>
+          <div id="challenge-description">
+            Complete the puzzle to earn league points and climb the ranks!
+          </div>
+
+          <div id="challenge-game">
+            <div id="bee-puzzle">
+              <p>Arrange the bees in optimal order for honey production:</p>
+              <div id="bee-options" class="sortable-list">
+                <!-- Bees will be loaded here -->
+              </div>
+              <div id="bee-solution" class="droppable-area">
+                <!-- Solution will be created here -->
+              </div>
+            </div>
+            <div class="hint-system">
+              <button id="use-hint">Use Hint <span class="hint-cost">(5 points)</span></button>
+              <div id="hint-content" class="hidden"></div>
+            </div>
+            <button id="submit-solution">Submit Solution</button>
+          </div>
+
+          <div id="challenge-result" class="hidden">
+            <h3>Challenge Results</h3>
+            <p id="result-message"></p>
+            <div id="points-earned"></div>
+            <div id="bonus-points" class="hidden">
+              <span class="bonus-label">Streak Bonus:</span> <span id="streak-bonus">0</span>
+            </div>
+            <button id="next-challenge">Next Challenge</button>
+          </div>
+        </div>
+
+        <div class="tab-content" id="weekly-content">
+          <h3>Weekly Tournament</h3>
+          <div class="challenge-timer">Ends in: <span id="tournament-countdown">6 days, 23:59:59</span></div>
+          <div class="tournament-info">
+            <p>Complete a series of increasingly difficult challenges to earn tournament points.</p>
+            <p>Top performers will receive exclusive rewards and climb the seasonal leaderboard faster!</p>
+          </div>
+          <div id="tournament-progress">
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="tournament-progress-bar" style="width: 0%;"></div>
+            </div>
+            <div class="progress-text">Progress: <span id="tournament-completed">0</span>/<span id="tournament-total">10</span></div>
+          </div>
+          <button id="start-tournament">Start Tournament Challenge</button>
+        </div>
+
+        <div class="tab-content" id="season-content">
+          <h3>Season 1: The Honey Rush</h3>
+          <div class="challenge-timer">Season ends in: <span id="season-countdown">45 days, 23:59:59</span></div>
+          <div class="season-progress">
+            <div class="progress-bar-container">
+              <div class="progress-bar" id="season-progress-bar" style="width: 0%;"></div>
+            </div>
+            <div class="progress-text">Level: <span id="season-level">1</span></div>
+          </div>
+          <div class="season-rewards">
+            <h4>Season Rewards</h4>
+            <div class="reward-grid">
+              <div class="reward-item locked" data-level="5">
+                <img src="bee/basic.png" alt="Bronze Frame">
+                <div class="reward-level">Level 5</div>
+              </div>
+              <div class="reward-item locked" data-level="10">
+                <img src="bee/hasty.png" alt="Silver Frame">
+                <div class="reward-level">Level 10</div>
+              </div>
+              <div class="reward-item locked" data-level="20">
+                <img src="bee/brave.png" alt="Gold Frame">
+                <div class="reward-level">Level 20</div>
+              </div>
+              <div class="reward-item locked" data-level="30">
+                <img src="bee/vicious.png" alt="Diamond Frame">
+                <div class="reward-level">Level 30</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="achievements-container">
+        <h3>Achievements</h3>
+        <div class="achievement-grid">
+          <div class="achievement" data-id="daily_streak">
+            <div class="achievement-icon locked"></div>
+            <div class="achievement-info">
+              <div class="achievement-name">Daily Devotion</div>
+              <div class="achievement-desc">Complete 7 daily challenges in a row</div>
+              <div class="achievement-progress">
+                <div class="progress-bar-container">
+                  <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text">0/7</div>
+              </div>
+            </div>
+          </div>
+          <div class="achievement" data-id="bee_expert">
+            <div class="achievement-icon locked"></div>
+            <div class="achievement-info">
+              <div class="achievement-name">Bee Expert</div>
+              <div class="achievement-desc">Successfully complete 50 bee arrangement challenges</div>
+              <div class="achievement-progress">
+                <div class="progress-bar-container">
+                  <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text">0/50</div>
+              </div>
+            </div>
+          </div>
+          <div class="achievement" data-id="league_climber">
+            <div class="achievement-icon locked"></div>
+            <div class="achievement-info">
+              <div class="achievement-name">League Climber</div>
+              <div class="achievement-desc">Reach Diamond League</div>
+              <div class="achievement-progress">
+                <div class="progress-bar-container">
+                  <div class="progress-bar" style="width: 0%;"></div>
+                </div>
+                <div class="progress-text">Bronze/Diamond</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button id="view-all-achievements">View All Achievements</button>
+      </div>
+
+      <div id="leaderboard-container">
+        <h3>Leaderboard</h3>
+        <div class="leaderboard-tabs">
+          <button class="tab-btn active" data-board="daily">Daily</button>
+          <button class="tab-btn" data-board="weekly">Weekly</button>
+          <button class="tab-btn" data-board="season">Season</button>
+        </div>
+        <table id="leaderboard">
+          <thead>
+            <tr>
+              <th>Rank</th>
+              <th>Player</th>
+              <th>League</th>
+              <th>Points</th>
+            </tr>
+          </thead>
+          <tbody id="leaderboard-body">
+            <!-- Leaderboard entries will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+
+      <div id="league-info">
+        <h3>Leagues</h3>
+        <div class="league-item">
+          <div class="league-icon bronze"></div>
+          <div class="league-name">Bronze</div>
+          <div class="league-points">0-100 points</div>
+        </div>
+        <div class="league-item">
+          <div class="league-icon silver"></div>
+          <div class="league-name">Silver</div>
+          <div class="league-points">101-300 points</div>
+        </div>
+        <div class="league-item">
+          <div class="league-icon gold"></div>
+          <div class="league-name">Gold</div>
+          <div class="league-points">301-600 points</div>
+        </div>
+        <div class="league-item">
+          <div class="league-icon diamond"></div>
+          <div class="league-name">Diamond</div>
+          <div class="league-points">601-1000 points</div>
+        </div>
+        <div class="league-item">
+          <div class="league-icon master"></div>
+          <div class="league-name">Master</div>
+          <div class="league-points">1001+ points</div>
+        </div>
+      </div>
+
+      <div id="toggle-container">
+        <label class="toggle">
+          <input type="checkbox" id="sound-toggle" checked />
+          <span class="slider round"></span>
+          <span class="toggle-label">Sound</span>
+        </label>
+      </div>
+
+      <div class="footer-buttons">
+        <button id="show-stats-button">League Stats</button>
+        <button id="customize-player">Customize</button>
+        <a href="index.html" class="button back-to-beedle-button">Back to Beedle</a>
+      </div>
+    </div>
+
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <div id="modal-text"></div>
+      </div>
+    </div>
+
+    <div id="customize-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h3>Customize Your Profile</h3>
+        <div class="customize-form">
+          <div class="form-group">
+            <label for="player-name-input">Player Name:</label>
+            <input type="text" id="player-name-input" maxlength="20" placeholder="Enter your name">
+          </div>
+          <div class="form-group">
+            <label>Profile Frame:</label>
+            <div class="frame-selector">
+              <div class="frame-option selected" data-frame="default">
+                <img src="bee/basic.png" alt="Default Frame">
+              </div>
+              <div class="frame-option locked" data-frame="bronze">
+                <img src="bee/brave.png" alt="Bronze Frame">
+                <div class="lock-overlay">
+                  <span>🔒</span>
+                </div>
+              </div>
+              <div class="frame-option locked" data-frame="silver">
+                <img src="bee/shocked.png" alt="Silver Frame">
+                <div class="lock-overlay">
+                  <span>🔒</span>
+                </div>
+              </div>
+              <div class="frame-option locked" data-frame="gold">
+                <img src="bee/fire.png" alt="Gold Frame">
+                <div class="lock-overlay">
+                  <span>🔒</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <button id="save-profile">Save Changes</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="bee-league.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // Theme toggle functionality
+        const themeToggle = document.getElementById("theme-toggle");
+
+        if (localStorage.getItem("darkMode") === "true") {
+          document.body.classList.add("dark-mode");
+          themeToggle.checked = true;
+        }
+
+        themeToggle.addEventListener("change", () => {
+          document.body.classList.toggle("dark-mode");
+          localStorage.setItem("darkMode", themeToggle.checked);
+        });
+
+        // Navigation toggle for mobile
+        const navbarToggle = document.getElementById("navbar-toggle");
+        const navbar = document.querySelector(".navbar");
+
+        navbarToggle.addEventListener("click", () => {
+          navbar.classList.toggle("expanded");
+        });
+
+        // Set active navigation item
+        const navLinks = document.querySelectorAll("#navbar-menu a");
+        const currentPage = window.location.pathname.split("/").pop() || "index.html";
+
+        navLinks.forEach(link => {
+          if (link.getAttribute("href") === currentPage) {
+            link.classList.add("active");
+          } else {
+            link.classList.remove("active");
+          }
+        });
+
+        // Tab switching
+        const tabButtons = document.querySelectorAll('.tab-btn');
+
+        tabButtons.forEach(button => {
+          button.addEventListener('click', function() {
+            // Handle content tabs
+            if (this.dataset.tab) {
+              const tabName = this.dataset.tab;
+
+              // Remove active class from all buttons and content
+              document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
+                btn.classList.remove('active');
+              });
+              document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+              });
+
+              // Add active class to current button and content
+              this.classList.add('active');
+              document.getElementById(`${tabName}-content`).classList.add('active');
+            }
+
+            // Handle leaderboard tabs
+            if (this.dataset.board) {
+              const boardName = this.dataset.board;
+
+              // Remove active class from all buttons
+              document.querySelectorAll('.tab-btn[data-board]').forEach(btn => {
+                btn.classList.remove('active');
+              });
+
+              // Add active class to current button
+              this.classList.add('active');
+
+              // Update leaderboard (will be handled by JS)
+              updateLeaderboard(boardName);
+            }
+          });
+        });
+
+        // Show customize modal
+        document.getElementById('customize-player').addEventListener('click', function() {
+          document.getElementById('customize-modal').style.display = 'block';
+        });
+
+        // Close modals
+        document.querySelectorAll('.close').forEach(closeBtn => {
+          closeBtn.addEventListener('click', function() {
+            this.closest('.modal').style.display = 'none';
+          });
+        });
+      });
+    </script>
+  </body>
+</html>

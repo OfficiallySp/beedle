@@ -1,0 +1,611 @@
+/* BSS Trivia CSS */
+.game-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+h1, h2, h3, h5 {
+  text-align: center;
+  color: var(--text-color);
+}
+
+h5 {
+  margin-top: -15px;
+  font-weight: normal;
+  font-style: italic;
+}
+
+/* Game info section */
+#game-info {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+  background-color: var(--container-bg);
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.info-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.info-label {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+}
+
+.info-value {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+/* Game sections */
+.game-section {
+  background-color: var(--container-bg);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.hidden {
+  display: none;
+}
+
+/* Game modes */
+#mode-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 15px;
+  margin: 20px 0;
+}
+
+.mode-option {
+  width: 200px;
+  background-color: var(--item-bg);
+  border-radius: 8px;
+  padding: 15px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.mode-option:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.mode-option.selected {
+  background-color: rgba(254, 221, 0, 0.1);
+  border: 2px solid #fedc00;
+}
+
+.mode-icon {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 10px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.mode-icon.timed {
+  background-image: url('images/clock.png');
+}
+
+.mode-icon.endless {
+  background-image: url('images/infinity.png');
+}
+
+.mode-icon.challenge {
+  background-image: url('images/trophy.png');
+}
+
+.mode-details {
+  text-align: center;
+}
+
+.mode-details h3 {
+  margin: 0 0 5px 0;
+}
+
+.mode-details p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+/* Category selection */
+#category-selector {
+  margin-top: 30px;
+}
+
+#categories {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.category-option {
+  background-color: var(--item-bg);
+  border-radius: 15px;
+  padding: 8px 15px;
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.2s;
+}
+
+.category-option:hover {
+  background-color: var(--hover-bg);
+}
+
+.category-option input {
+  margin-right: 5px;
+}
+
+/* Start game button */
+#start-game {
+  display: block;
+  margin: 25px auto 5px;
+  padding: 12px 30px;
+  background-color: #fedc00;
+  color: #333;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#start-game:hover {
+  background-color: #edc900;
+  transform: scale(1.05);
+}
+
+/* Question display */
+#question-container {
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+#difficulty-indicator, #category-indicator {
+  display: inline-block;
+  margin: 0 10px 10px;
+  font-size: 14px;
+}
+
+#difficulty-label, #category-label {
+  color: var(--text-secondary);
+}
+
+#difficulty-value, #category-value {
+  font-weight: bold;
+}
+
+#question-text {
+  font-size: 22px;
+  margin: 20px 0;
+  line-height: 1.4;
+}
+
+#question-image-container {
+  margin: 20px auto;
+  max-width: 300px;
+}
+
+#question-image {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Answer options */
+#answers-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+
+.answer-option {
+  background-color: var(--item-bg);
+  border-radius: 8px;
+  padding: 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.answer-option:hover {
+  background-color: var(--hover-bg);
+}
+
+.answer-letter {
+  width: 30px;
+  height: 30px;
+  background-color: rgba(254, 221, 0, 0.2);
+  color: #333;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin-right: 15px;
+}
+
+.answer-text {
+  flex-grow: 1;
+  font-size: 16px;
+}
+
+.answer-option.selected {
+  background-color: rgba(254, 221, 0, 0.1);
+  border: 2px solid #fedc00;
+}
+
+.answer-option.correct {
+  background-color: rgba(75, 181, 67, 0.1);
+  border: 2px solid #4bb543;
+}
+
+.answer-option.incorrect {
+  background-color: rgba(255, 82, 82, 0.1);
+  border: 2px solid #ff5252;
+}
+
+/* Feedback message */
+#feedback-message {
+  text-align: center;
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 8px;
+  background-color: rgba(75, 181, 67, 0.1);
+  border: 2px solid #4bb543;
+}
+
+#feedback-message.incorrect {
+  background-color: rgba(255, 82, 82, 0.1);
+  border: 2px solid #ff5252;
+}
+
+#feedback-text {
+  font-size: 18px;
+  font-weight: bold;
+  display: block;
+  margin-bottom: 10px;
+}
+
+#feedback-details {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Next question button */
+#next-question {
+  display: block;
+  margin: 25px auto 10px;
+  padding: 10px 25px;
+  background-color: #fedc00;
+  color: #333;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#hint-button {
+  display: block;
+  margin: 15px auto 10px;
+  padding: 8px 20px;
+  background-color: #4e8cff;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#hint-button:hover {
+  background-color: #3a7eff;
+  transform: scale(1.05);
+}
+
+#next-question:hover {
+  background-color: #edc900;
+  transform: scale(1.05);
+}
+
+/* Game results */
+#results-details {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.result-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.result-label {
+  color: var(--text-secondary);
+}
+
+.result-value {
+  font-weight: bold;
+}
+
+#high-score-message {
+  text-align: center;
+  padding: 10px;
+  margin: 15px 0;
+  background-color: rgba(254, 221, 0, 0.2);
+  border-radius: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+#results-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 25px;
+}
+
+#play-again, #change-mode {
+  padding: 10px 20px;
+  background-color: #fedc00;
+  color: #333;
+  border: none;
+  border-radius: 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+#play-again:hover, #change-mode:hover {
+  background-color: #edc900;
+  transform: scale(1.05);
+}
+
+/* Toggle container */
+#toggle-container {
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* Footer buttons */
+.footer-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+#show-stats-button, .back-to-beedle-button {
+  padding: 10px 20px;
+  background-color: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  display: inline-block;
+}
+
+#show-stats-button:hover, .back-to-beedle-button:hover {
+  background-color: var(--button-hover);
+}
+
+/* Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  background-color: var(--container-bg);
+  margin: 10% auto;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  right: 20px;
+  top: 10px;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  color: var(--text-secondary);
+}
+
+.close:hover {
+  color: var(--text-color);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .game-container {
+    padding: 10px;
+  }
+
+  #game-info {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .info-box {
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0 10px;
+  }
+
+  #mode-options {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .mode-option {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  #question-text {
+    font-size: 18px;
+  }
+
+  .answer-option {
+    padding: 12px 10px;
+  }
+
+  .answer-letter {
+    width: 25px;
+    height: 25px;
+    font-size: 14px;
+    margin-right: 10px;
+  }
+
+  .answer-text {
+    font-size: 15px;
+  }
+
+  .modal-content {
+    margin: 20% auto;
+    width: 90%;
+  }
+}
+
+/* Achievement notifications */
+.achievement-notification {
+  position: fixed;
+  top: 20px;
+  right: -300px;
+  width: 300px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  z-index: 9999;
+  transition: right 0.5s ease;
+}
+
+.achievement-notification.show {
+  right: 20px;
+}
+
+.achievement-icon {
+  font-size: 30px;
+  margin-right: 15px;
+}
+
+.achievement-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #fedc00;
+}
+
+.achievement-description {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.streak-counter {
+  display: inline-block;
+  margin-top: 5px;
+  font-weight: bold;
+  color: #fedc00;
+}
+
+/* Achievements page */
+.achievements-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.achievement-card {
+  background-color: var(--item-bg);
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.achievement-card.locked {
+  opacity: 0.5;
+}
+
+.achievement-card-icon {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+.achievement-card-title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.achievement-card-description {
+  font-size: 14px;
+  color: var(--text-secondary);
+}
+
+.achievement-unlock-date {
+  font-size: 12px;
+  margin-top: 10px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .achievement-notification {
+    width: calc(100% - 40px);
+    max-width: 300px;
+  }
+
+  .achievements-grid {
+    grid-template-columns: 1fr;
+  }
+}
