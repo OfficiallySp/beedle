@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://officiallysp.github.io/Beedle/sitemap.xml
