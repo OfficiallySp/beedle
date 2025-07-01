@@ -67,6 +67,7 @@ let statGuessActive = false;
 // Initialize stat guess mode toggle
 statModeToggle.checked = localStorage.getItem("statGuessMode") === "true";
 isStatGuessMode = statModeToggle.checked;
+setupGame();
 
 // Add event listener for stat mode toggle
 statModeToggle.addEventListener("change", () => {
@@ -424,8 +425,11 @@ function updateStats(isWin, attempts) {
     stats.currentStreak++;
     stats.maxStreak = Math.max(stats.maxStreak, stats.currentStreak);
     stats.guessDistribution[attempts - 1]++;
-  } else {
+  } else { // Player lost
     stats.currentStreak = 0;
+    // Add this line to record the loss in the guess distribution
+    // 'attempts' will be maxAttempts when isWin is false, as per the calling context in submitGuess
+    stats.guessDistribution[attempts - 1]++; 
   }
   localStorage.setItem("stats", JSON.stringify(stats));
   displayStats();
